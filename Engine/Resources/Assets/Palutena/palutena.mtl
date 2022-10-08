@@ -1,0 +1,63 @@
+# Blender MTL File: 'None'
+# Material Count: 7
+
+newmtl PaluEyeIris
+Ns 20
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd PaluEyeIris.png
+map_Ks PaluEyeIris.png
+
+newmtl PaluH_body
+Ns 100
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd PaluH_body.png
+map_Ks PaluH_body.png
+map_d PaluH_body.png
+
+newmtl Palu_Matsuge
+Ns 100
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Palu_Matsuge.png
+map_Ks Palu_Matsuge.png
+map_d Palu_Matsuge.png
+
+newmtl Palu_body
+Ns 100
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Palu_body.png
+map_Ks Palu_body.png
+map_d Palu_body.png
+
+newmtl Palu_light
+Ns 30
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 1.000000 1.000000 1.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Palu_light.png
+map_Ks Palu_light.png
+map_Ke Palu_light.png
+map_d Palu_light.png

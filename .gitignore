@@ -1,0 +1,10 @@
+.vs/
+.vscode/
+lfs/
+hooks/
+**/engine.pdb
+**/engine.exp
+**/engine.lib
+**/x64/*
+**/__pycache__/
+Engine/Binaries/

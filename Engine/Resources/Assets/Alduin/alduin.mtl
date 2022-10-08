@@ -1,0 +1,27 @@
+# Blender MTL File: 'None'
+# Material Count: 2
+
+newmtl mt_alduin
+Ns 31.372549
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd alduin.png
+map_Ks alduin_m_1.png
+map_bump alduin_normal_1.png
+
+newmtl mt_alduin_eyes
+Ns 31.372549
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.300000 0.300000 0.300000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd alduineyes.png
+map_Ks alduineyes_g.png
+map_Ke alduineyes_g.png

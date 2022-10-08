@@ -1,0 +1,28 @@
+# Blender MTL File: 'Sketchfab_2022_01_25_13_18_02.blend'
+# Material Count: 3
+
+newmtl mt_MasterChief_Body
+Ns 100.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd Tex_MasterChief_Body_D.png
+map_Ks Tex_MasterChief_Body_D.png
+map_Bump Tex_MasterChief_Body_N.png
+
+newmtl mt_MasterChief_Face
+Ns 100.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 1.000000 1.000000 1.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd Tex_MasterChief_Face_D.png
+map_Ks Tex_MasterChief_Face_D.png
+map_Ke Tex_MasterChief_Face_E.png
+map_Bump Tex_MasterChief_Face_N.png

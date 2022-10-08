@@ -1,0 +1,290 @@
+
+INFO: App.cpp(162) in Core::App::Run
+Time for loading : 129770585 ms 
+
+
+WARNING: ResourceManager.inl(123) in Resources::ResourceManager::Get
+Not found resource was created: mesh_Rico
+
+WARNING: ResourceManager.inl(123) in Resources::ResourceManager::Get
+Not found resource was created: mesh_Gun
+
+WARNING: ResourceManager.inl(123) in Resources::ResourceManager::Get
+Not found resource was created: stadium
+
+WARNING: ResourceManager.inl(123) in Resources::ResourceManager::Get
+Not found resource was created: mesh_moon
+
+WARNING: ResourceManager.inl(123) in Resources::ResourceManager::Get
+Not found resource was created: mesh_headcrab
+
+WARNING: ResourceManager.inl(123) in Resources::ResourceManager::Get
+Not found resource was created: mesh_crowbar
+
+WARNING: ResourceManager.inl(123) in Resources::ResourceManager::Get
+Not found resource was created: mesh_doommarine
+
+WARNING: ResourceManager.inl(123) in Resources::ResourceManager::Get
+Not found resource was created: mesh_bfg
+
+WARNING: ResourceManager.inl(123) in Resources::ResourceManager::Get
+Not found resource was created: mesh_MasterChief
+
+WARNING: ResourceManager.inl(123) in Resources::ResourceManager::Get
+Not found resource was created: energySword
+
+WARNING: ResourceManager.inl(123) in Resources::ResourceManager::Get
+Not found resource was created: mesh_box
+
+WARNING: ResourceManager.inl(123) in Resources::ResourceManager::Get
+Not found resource was created: mesh_banana
+
+WARNING: ResourceManager.inl(123) in Resources::ResourceManager::Get
+Not found resource was created: mesh_palutena
+
+WARNING: ResourceManager.inl(123) in Resources::ResourceManager::Get
+Not found resource was created: mesh_palutenaStaff
+
+WARNING: ResourceManager.inl(123) in Resources::ResourceManager::Get
+Not found resource was created: Alduin
+
+WARNING: ResourceManager.inl(123) in Resources::ResourceManager::Get
+Not found resource was created: SteveMaterial
+
+INFO: ObjFile.cpp(198) in Resources::ObjFile::Load
+Loading file Resources/Assets/Gun/gun.obj took 0.001855 seconds.
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Textures/steveCursed.png
+
+INFO: ObjFile.cpp(198) in Resources::ObjFile::Load
+Loading file Resources/Assets/Rico/rico.obj took 0.020205 seconds.
+
+INFO: ObjFile.cpp(198) in Resources::ObjFile::Load
+Loading file Resources/Assets/TrainingStadium/SuperTrainingStage.obj took 0.027984 seconds.
+
+INFO: ObjFile.cpp(198) in Resources::ObjFile::Load
+Loading file Resources/Assets/Moon/moon.obj took 0.007078 seconds.
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/TrainingStadium/spa_whiteline.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/Gun/tx_eric_sp.png
+
+INFO: ObjFile.cpp(198) in Resources::ObjFile::Load
+Loading file Resources/Assets/Headcrab/headcrab.obj took 0.049266 seconds.
+
+INFO: ObjFile.cpp(198) in Resources::ObjFile::Load
+Loading file Resources/Assets/Crowbar/crowbar.obj took 0.002323 seconds.
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/TrainingStadium/spa_kusa01.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/TrainingStadium/spa_sky00.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/Rico/rico.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/TrainingStadium/spa_black.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/TrainingStadium/spa_cloud00.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/TrainingStadium/spa_stadium00.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/TrainingStadium/spa_kyaku.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/TrainingStadium/spa_ground00.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/Moon/moon_00_1.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/TrainingStadium/spa_prop00.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/Moon/moon_00_0.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/TrainingStadium/spa_roof00.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/TrainingStadium/spa_prop01.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/Headcrab/headcrab_base.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/Headcrab/headcrab_shininess.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/Headcrab/headcrab_normal.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/Crowbar/crowbar_normal.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/Crowbar/crowbar_cyl.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/Crowbar/head_normal.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/Crowbar/head.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/DoomSlayer/models_characters_doommarine_doommarine_legs_c.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/DoomSlayer/models_characters_doommarine_doommarine_torso_n.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/DoomSlayer/models_characters_doommarine_doommarine_visor_n.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/DoomSlayer/models_characters_doommarine_doommarine_cowl_s.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/DoomSlayer/models_characters_doommarine_doommarine_legs_s.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/DoomSlayer/models_characters_doommarine_doommarine_legs_n.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/DoomSlayer/models_characters_doommarine_doommarine_helmet_n.png
+
+INFO: ObjFile.cpp(198) in Resources::ObjFile::Load
+Loading file Resources/Assets/DoomSlayer/doommarine.obj took 1.188165 seconds.
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/DoomSlayer/models_characters_doommarine_doommarine_arms_c.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/DoomSlayer/models_characters_doommarine_doommarine_arms_s.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/DoomSlayer/models_characters_doommarine_doommarine_arms_n.png
+
+INFO: ObjFile.cpp(198) in Resources::ObjFile::Load
+Loading file Resources/Assets/BFG/bfg.obj took 0.357215 seconds.
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/DoomSlayer/models_characters_doommarine_doommarine_cowl_c.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/MasterChief/Tex_MasterChief_Face_D.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/MasterChief/Tex_MasterChief_Face_N.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/DoomSlayer/models_characters_doommarine_doommarine_cowl_n.png
+
+INFO: ObjFile.cpp(198) in Resources::ObjFile::Load
+Loading file Resources/Assets/MasterChief/masterChief.obj took 0.171069 seconds.
+
+INFO: ObjFile.cpp(198) in Resources::ObjFile::Load
+Loading file Resources/Assets/EnergySword/energySword.obj took 0.001144 seconds.
+
+INFO: ObjFile.cpp(198) in Resources::ObjFile::Load
+Loading file Resources/Assets/ItemBox/box.obj took 0.000392 seconds.
+
+INFO: ObjFile.cpp(198) in Resources::ObjFile::Load
+Loading file Resources/Assets/Banana/banana.obj took 0.002296 seconds.
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/ItemBox/box_mat.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/Palutena/Palu_body.png
+
+INFO: ObjFile.cpp(198) in Resources::ObjFile::Load
+Loading file Resources/Assets/Palutena/palutena.obj took 0.025766 seconds.
+
+INFO: ObjFile.cpp(198) in Resources::ObjFile::Load
+Loading file Resources/Assets/Palutena/palutenaStaff.obj took 0.003556 seconds.
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/Banana/banana.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/DoomSlayer/models_characters_doommarine_doommarine_helmet_c.png
+
+INFO: ObjFile.cpp(198) in Resources::ObjFile::Load
+Loading file Resources/Assets/Alduin/alduin.obj took 0.075266 seconds.
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/DoomSlayer/models_characters_doommarine_doommarine_helmet_s.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/BFG/bfg_e.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/DoomSlayer/models_characters_doommarine_doommarine_torso_c.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/DoomSlayer/models_characters_doommarine_doommarine_torso_s.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/DoomSlayer/models_characters_doommarine_doommarine_visor_c.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/BFG/bfg_n.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/BFG/bfg.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/BFG/bfg_s.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/BFG/bfg_r.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/MasterChief/Tex_MasterChief_Body_D.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/MasterChief/Tex_MasterChief_Body_N.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/MasterChief/Tex_MasterChief_Face_E.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/EnergySword/energySword.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/Alduin/alduineyes.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/Palutena/PaluEyeIris.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/Palutena/PaluH_body.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/Palutena/Palu_Matsuge.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/Palutena/Palu_light.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/Alduin/alduin.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/Alduin/alduin_m_1.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/Alduin/alduin_normal_1.png
+
+INFO: Textures.cpp(85) in Resources::Texture::SendToOpenGL
+Sending texture to openGL: Resources/Assets/Alduin/alduineyes_g.png
+
+INFO: App.cpp(162) in Core::App::Run
+Time for loading : 3483 ms 
+

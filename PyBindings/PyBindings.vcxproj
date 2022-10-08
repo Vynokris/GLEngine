@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{bb3cf8ba-7367-456f-b8c2-545981a9b72a}</ProjectGuid>
+    <RootNamespace>PyBindings</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>PyBindings</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetExt>.pyd</TargetExt>
+    <TargetName>engine</TargetName>
+    <OutDir>$(SolutionDir)Engine\Libs\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine\Headers;$(SolutionDir)Engine\Includes;$(SolutionDir)Engine\Includes\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)Engine\Libs;$(SolutionDir)Engine\Includes\python;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Engine\Headers\App.h" />
+    <ClInclude Include="..\Engine\Headers\Arithmetic.h" />
+    <ClInclude Include="..\Engine\Headers\Camera.h" />
+    <ClInclude Include="..\Engine\Headers\CameraManager.h" />
+    <ClInclude Include="..\Engine\Headers\Collisions.h" />
+    <ClInclude Include="..\Engine\Headers\Color.h" />
+    <ClInclude Include="..\Engine\Headers\Debug.h" />
+    <ClInclude Include="..\Engine\Headers\IResource.h" />
+    <ClInclude Include="..\Engine\Headers\KeyBindings.h" />
+    <ClInclude Include="..\Engine\Headers\Light.h" />
+    <ClInclude Include="..\Engine\Headers\LightManager.h" />
+    <ClInclude Include="..\Engine\Headers\Material.h" />
+    <ClInclude Include="..\Engine\Headers\Maths.h" />
+    <ClInclude Include="..\Engine\Headers\Matrix.h" />
+    <ClInclude Include="..\Engine\Headers\Mesh.h" />
+    <ClInclude Include="..\Engine\Headers\MtlFile.h" />
+    <ClInclude Include="..\Engine\Headers\ObjectScript.h" />
+    <ClInclude Include="..\Engine\Headers\ObjFile.h" />
+    <ClInclude Include="..\Engine\Headers\Physics.h" />
+    <ClInclude Include="..\Engine\Headers\Primitive.h" />
+    <ClInclude Include="..\Engine\Headers\PyScript.h" />
+    <ClInclude Include="..\Engine\Headers\ResourceManager.h" />
+    <ClInclude Include="..\Engine\Headers\Rigidbody.h" />
+    <ClInclude Include="..\Engine\Headers\SceneGraph.h" />
+    <ClInclude Include="..\Engine\Headers\SceneNode.h" />
+    <ClInclude Include="..\Engine\Headers\Shader.h" />
+    <ClInclude Include="..\Engine\Headers\SubMesh.h" />
+    <ClInclude Include="..\Engine\Headers\Textures.h" />
+    <ClInclude Include="..\Engine\Headers\TextureSampler.h" />
+    <ClInclude Include="..\Engine\Headers\ThreadManager.h" />
+    <ClInclude Include="..\Engine\Headers\TimeManager.h" />
+    <ClInclude Include="..\Engine\Headers\Transform.h" />
+    <ClInclude Include="..\Engine\Headers\Ui.h" />
+    <ClInclude Include="..\Engine\Headers\Vector2.h" />
+    <ClInclude Include="..\Engine\Headers\Vector3.h" />
+    <ClInclude Include="..\Engine\Headers\Vector4.h" />
+    <ClInclude Include="..\Engine\Includes\glad\glad.h" />
+    <ClInclude Include="..\Engine\Includes\imgui\imconfig.h" />
+    <ClInclude Include="..\Engine\Includes\imgui\imgui.h" />
+    <ClInclude Include="..\Engine\Includes\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="..\Engine\Includes\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="..\Engine\Includes\imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="..\Engine\Includes\imgui\imgui_internal.h" />
+    <ClInclude Include="..\Engine\Includes\imgui\imgui_stdlib.h" />
+    <ClInclude Include="..\Engine\Includes\imgui\imstb_rectpack.h" />
+    <ClInclude Include="..\Engine\Includes\imgui\imstb_textedit.h" />
+    <ClInclude Include="..\Engine\Includes\imgui\imstb_truetype.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Engine\Headers\LightManager.inl" />
+    <None Include="..\Engine\Headers\ResourceManager.inl" />
+    <None Include="..\Engine\Headers\Vector2.inl" />
+    <None Include="..\Engine\Headers\Vector3.inl" />
+    <None Include="..\Engine\Headers\Vector4.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Engine\Includes\imgui\imgui.cpp" />
+    <ClCompile Include="..\Engine\Includes\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\Engine\Includes\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="..\Engine\Includes\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="..\Engine\Includes\imgui\imgui_stdlib.cpp" />
+    <ClCompile Include="..\Engine\Includes\imgui\imgui_tables.cpp" />
+    <ClCompile Include="..\Engine\Includes\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\Engine\Sources\App.cpp" />
+    <ClCompile Include="..\Engine\Sources\Arithmetic.cpp" />
+    <ClCompile Include="..\Engine\Sources\Camera.cpp" />
+    <ClCompile Include="..\Engine\Sources\CameraManager.cpp" />
+    <ClCompile Include="..\Engine\Sources\Collisions.cpp" />
+    <ClCompile Include="..\Engine\Sources\Color.cpp" />
+    <ClCompile Include="..\Engine\Sources\Debug.cpp" />
+    <ClCompile Include="..\Engine\Sources\glad.cpp" />
+    <ClCompile Include="..\Engine\Sources\KeyBindings.cpp" />
+    <ClCompile Include="..\Engine\Sources\Light.cpp" />
+    <ClCompile Include="..\Engine\Sources\LightManager.cpp" />
+    <ClCompile Include="..\Engine\Sources\main.cpp" />
+    <ClCompile Include="..\Engine\Sources\Material.cpp" />
+    <ClCompile Include="..\Engine\Sources\Matrix.cpp" />
+    <ClCompile Include="..\Engine\Sources\Mesh.cpp" />
+    <ClCompile Include="..\Engine\Sources\MtlFile.cpp" />
+    <ClCompile Include="..\Engine\Sources\ObjFile.cpp" />
+    <ClCompile Include="..\Engine\Sources\Primitive.cpp" />
+    <ClCompile Include="..\Engine\Sources\PyScript.cpp" />
+    <ClCompile Include="..\Engine\Sources\PythonBindings.cpp" />
+    <ClCompile Include="..\Engine\Sources\ResourceManager.cpp" />
+    <ClCompile Include="..\Engine\Sources\Rigidbody.cpp" />
+    <ClCompile Include="..\Engine\Sources\SceneGraph.cpp" />
+    <ClCompile Include="..\Engine\Sources\SceneNode.cpp" />
+    <ClCompile Include="..\Engine\Sources\Shader.cpp" />
+    <ClCompile Include="..\Engine\Sources\SubMesh.cpp" />
+    <ClCompile Include="..\Engine\Sources\Textures.cpp" />
+    <ClCompile Include="..\Engine\Sources\TextureSampler.cpp" />
+    <ClCompile Include="..\Engine\Sources\ThreadManager.cpp" />
+    <ClCompile Include="..\Engine\Sources\TimeManager.cpp" />
+    <ClCompile Include="..\Engine\Sources\Transform.cpp" />
+    <ClCompile Include="..\Engine\Sources\Ui.cpp" />
+    <ClCompile Include="..\Engine\Sources\Vector2.cpp" />
+    <ClCompile Include="..\Engine\Sources\Vector3.cpp" />
+    <ClCompile Include="..\Engine\Sources\Vector4.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
