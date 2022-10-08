@@ -1,5 +1,18 @@
 # **Modern OpenGL Multithreaded Engine with Python scripting**
 
+## **Screenshots**
+
+![Asynchronous loading in release](Engine/Screenshots/asyncRelease.gif)
+<img src="Engine/Screenshots/ExampleScene.png" alt="Example Scene">
+<img src="Engine/Screenshots/SceneGraph.png" alt="Scene Graph"> 
+<img src="Engine/Screenshots/InspectorWindow.png" alt="Inspector Window"> 
+<img src="Engine/Screenshots/Stats.png" alt="Stats"> 
+<img src="Engine/Screenshots/Logs.png" alt="Logs">
+<img src="Engine/Screenshots/ResourcesExplorer.png" alt="Resources Explorer">
+<img src="Engine/Screenshots/MaterialEditor.png" alt="Material Editor">
+
+<br>
+
 ## **Features**
 
 ### **Start menu**
@@ -300,16 +313,3 @@
 - Because of the single-thread oriented architecture the engine originally had, it was not possible to move physics computations or script updates to other threads without reworking everything.
 - Logs sent from Python are only shown in the console, and not the engine logs nor the logs file.
 - Loading scenes and scene resources through Python scripts is theorically possible but not yet implemented.
-
-<br>
-
-### **Screenshots**
-
-![Asynchronous loading in release](Engine/Screenshots/asyncRelease.gif)
-<img src="Engine/Screenshots/ExampleScene.png" alt="Example Scene">
-<img src="Engine/Screenshots/SceneGraph.png" alt="Scene Graph"> 
-<img src="Engine/Screenshots/InspectorWindow.png" alt="Inspector Window"> 
-<img src="Engine/Screenshots/Stats.png" alt="Stats"> 
-<img src="Engine/Screenshots/Logs.png" alt="Logs">
-<img src="Engine/Screenshots/ResourcesExplorer.png" alt="Resources Explorer">
-<img src="Engine/Screenshots/MaterialEditor.png" alt="Material Editor">
