@@ -45,8 +45,8 @@
 
 - **Play:**
     - ▶ : Starts play mode
-    - || : Pauses play mode
-    - X : Stops play mode
+    - ⏸︎ : Pauses play mode
+    - ⏹ : Stops play mode
 
 <br>
 
