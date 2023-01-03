@@ -1,15 +1,24 @@
 # **Modern OpenGL Multithreaded Engine with Python scripting**
 
-## **Screenshots**
+### **General Information**
+
+This project was created for the ISART Digital school by Rémi Serra and other collaborators (Bruno Gomes and Yann Dechaux).
+The project was segmented into a few parts with the following goals:
+- Create an barebones engine in C++ using OpenGL that can load asset files, render them, and has a scene editor (scene tree graph and scene object inspector)
+- Create a small platformer game by adding a play mode, physics, collisions, and scene object scripts
+- Load assets asynchronously using multiple CPU threads to increase performance
+- Create bindings for the engine in Python and use them to create scene object scripts in Python rather than C++
+
+## **Preview**
 
 ![Asynchronous loading in release](Engine/Screenshots/asyncRelease.gif)
 <img src="Engine/Screenshots/ExampleScene.png" alt="Example Scene">
 <img src="Engine/Screenshots/SceneGraph.png" alt="Scene Graph"> 
 <img src="Engine/Screenshots/InspectorWindow.png" alt="Inspector Window"> 
 <img src="Engine/Screenshots/Stats.png" alt="Stats"> 
-<img src="Engine/Screenshots/Logs.png" alt="Logs">
 <img src="Engine/Screenshots/ResourcesExplorer.png" alt="Resources Explorer">
 <img src="Engine/Screenshots/MaterialEditor.png" alt="Material Editor">
+<img src="Engine/Screenshots/Logs.png" alt="Logs">
 
 <br>
 
