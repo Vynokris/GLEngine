@@ -13,7 +13,7 @@ namespace Render
     struct CameraParams
     {
         unsigned int width, height;
-        float near, far, fov, aspect;
+        float near = 0.1f, far = 1000, fov = 80.f, aspect = 1;
     };
 
     class Camera

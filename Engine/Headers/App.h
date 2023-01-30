@@ -4,6 +4,7 @@
 #include <vector>
 #include "Maths.h"
 #include "TimeManager.h"
+#include "PostProcessor.h"
 #include "ResourceManager.h"
 #include "LightManager.h"
 #include "CameraManager.h"
@@ -78,6 +79,7 @@ namespace Core
         Resources::ResourceManager resourceManager;
         Render::LightManager       lightManager;
         Render::CameraManager      cameraManager;
+        Render::PostProcessor      postProcessor;
         Scenes::SceneGraph         sceneGraph;
 
         // Constructor/Destructor.

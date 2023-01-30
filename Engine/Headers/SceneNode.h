@@ -8,6 +8,7 @@
 namespace Resources
 {
     class Mesh;
+    class Cubemap;
     class Material;
     class ShaderProgram;
 }
@@ -35,6 +36,8 @@ namespace Scenes
     {
         Empty,
         Model,
+        InstancedModel,
+        Skybox,
         Camera,
         DirLight,
         PointLight,
@@ -101,6 +104,39 @@ namespace Scenes
 
         SceneModel(const size_t& _id, const std::string& _name, Resources::Mesh* _meshGroup, SceneNode* _parent = nullptr);
         void Draw(const Render::Camera& camera, const Render::LightManager& lightManager);
+        void ShowInspectorUi() override;
+    };
+
+    class SceneInstancedModel : public SceneNode
+    {
+    private:
+        unsigned int matrixBufferId = 0;
+
+    public:
+        size_t instanceCount;
+        std::vector<Transform> instanceTransforms;
+        Resources::Mesh* meshGroup = nullptr;
+
+        bool wasLoaded = false;
+
+        SceneInstancedModel(const size_t& _id, const std::string& _name, Resources::Mesh* _meshGroup, const int& _instanceCount, SceneNode* _parent = nullptr);
+        void Setup();
+        void UpdateMatrixBuffer();
+        void Draw(const Render::Camera& camera, const Render::LightManager& lightManager);
+        void ShowInspectorUi() override;
+        void Shuffle();
+    };
+
+    class SceneSkybox : public SceneNode
+    {
+    private:
+        Resources::Mesh* skyboxMesh = nullptr;
+
+    public:
+        Resources::Cubemap* cubemap = nullptr;
+
+        SceneSkybox(const size_t& _id, const std::string& _name, Resources::Cubemap* _cubemap, SceneNode* _parent = nullptr);
+        void Draw(const Render::Camera& camera);
         void ShowInspectorUi() override;
     };
 

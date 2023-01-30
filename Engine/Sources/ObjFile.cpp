@@ -112,7 +112,7 @@ ObjFile::ObjFile(const std::string& _name, ResourceManager& _resourceManager)
 
 void ObjFile::Load()
 {
-    const ShaderProgram* shaderProgram = resourceManager.Get<ShaderProgram>("ShaderProgram"); // TEMP: Should be done automatically.
+    const ShaderProgram* shaderProgram = resourceManager.Get<ShaderProgram>("MeshShaderProgram"); // TEMP: Should be done automatically.
 
     // Start chrono.
     std::chrono::steady_clock::time_point chronoStart = std::chrono::high_resolution_clock::now();

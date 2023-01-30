@@ -8,8 +8,11 @@ namespace Resources
     {
         Texture,
         DynamicTexture,
+        RenderTexture,
+        Cubemap,
         Material,
         Mesh,
+        InstancedMesh,
         VertexShader,
         FragmentShader,
         ComputeShader,
@@ -33,6 +36,7 @@ namespace Resources
 
         virtual void  Load()         = 0;
         virtual void  SendToOpenGL() = 0;
+        // virtual void* CreateCopy()   = 0;
         bool          IsLoaded()        const { return loaded.load();       }
         void          SetLoadingDone()        { loaded.store(true);         }
         bool          WasSentToOpenGL() const { return sentToOpenGL.load(); }

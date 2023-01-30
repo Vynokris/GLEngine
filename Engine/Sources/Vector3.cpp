@@ -61,8 +61,12 @@ Vector3 Vector3::getCopiedSign(const Vector3& source) const { return Vector3(std
 float Vector3::getDistanceFromPoint(const Vector3& p) const { return Vector3(*this, p).getLength(); }
 
 // Returns the angle (in radians) of the given vector.
-float Vector3::getXAngle() const { return asin(-y); }
-float Vector3::getYAngle() const { return atan2(x, z); }
+float Vector3::getXAngle() const { return asin(-getNormalized().y); }
+float Vector3::getYAngle() const 
+{
+    const Vector3 n = getNormalized();
+    return atan2(n.x, n.z);
+}
 
 // Returns the angle (in radians) between two vectors.
 float Vector3::getXAngleWithVector3(const Vector3& v) const

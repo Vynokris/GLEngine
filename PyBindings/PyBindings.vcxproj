@@ -149,10 +149,12 @@
   <ItemGroup>
     <ClInclude Include="..\Engine\Headers\App.h" />
     <ClInclude Include="..\Engine\Headers\Arithmetic.h" />
+    <ClInclude Include="..\Engine\Headers\AsteroidRotation.h" />
     <ClInclude Include="..\Engine\Headers\Camera.h" />
     <ClInclude Include="..\Engine\Headers\CameraManager.h" />
     <ClInclude Include="..\Engine\Headers\Collisions.h" />
     <ClInclude Include="..\Engine\Headers\Color.h" />
+    <ClInclude Include="..\Engine\Headers\Cubemap.h" />
     <ClInclude Include="..\Engine\Headers\Debug.h" />
     <ClInclude Include="..\Engine\Headers\IResource.h" />
     <ClInclude Include="..\Engine\Headers\KeyBindings.h" />
@@ -166,6 +168,7 @@
     <ClInclude Include="..\Engine\Headers\ObjectScript.h" />
     <ClInclude Include="..\Engine\Headers\ObjFile.h" />
     <ClInclude Include="..\Engine\Headers\Physics.h" />
+    <ClInclude Include="..\Engine\Headers\PostProcessor.h" />
     <ClInclude Include="..\Engine\Headers\Primitive.h" />
     <ClInclude Include="..\Engine\Headers\PyScript.h" />
     <ClInclude Include="..\Engine\Headers\ResourceManager.h" />
@@ -212,10 +215,12 @@
     <ClCompile Include="..\Engine\Includes\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\Engine\Sources\App.cpp" />
     <ClCompile Include="..\Engine\Sources\Arithmetic.cpp" />
+    <ClCompile Include="..\Engine\Sources\AsteroidRotation.cpp" />
     <ClCompile Include="..\Engine\Sources\Camera.cpp" />
     <ClCompile Include="..\Engine\Sources\CameraManager.cpp" />
     <ClCompile Include="..\Engine\Sources\Collisions.cpp" />
     <ClCompile Include="..\Engine\Sources\Color.cpp" />
+    <ClCompile Include="..\Engine\Sources\Cubemap.cpp" />
     <ClCompile Include="..\Engine\Sources\Debug.cpp" />
     <ClCompile Include="..\Engine\Sources\glad.cpp" />
     <ClCompile Include="..\Engine\Sources\KeyBindings.cpp" />
@@ -227,6 +232,7 @@
     <ClCompile Include="..\Engine\Sources\Mesh.cpp" />
     <ClCompile Include="..\Engine\Sources\MtlFile.cpp" />
     <ClCompile Include="..\Engine\Sources\ObjFile.cpp" />
+    <ClCompile Include="..\Engine\Sources\PostProcessor.cpp" />
     <ClCompile Include="..\Engine\Sources\Primitive.cpp" />
     <ClCompile Include="..\Engine\Sources\PyScript.cpp" />
     <ClCompile Include="..\Engine\Sources\PythonBindings.cpp" />

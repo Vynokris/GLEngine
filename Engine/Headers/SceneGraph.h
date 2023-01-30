@@ -37,13 +37,15 @@ namespace Scenes
 
         ~SceneGraph();
 
-        SceneNode*       AddEmpty     (const std::string& name,                                SceneNode* parent = nullptr);
-        SceneModel*      AddModel     (const std::string& name, Resources::Mesh*    meshGroup, SceneNode* parent = nullptr);
-        SceneCamera*     AddCamera    (const std::string& name, Render::Camera*     camera,    SceneNode* parent = nullptr);
-        SceneDirLight*   AddDirLight  (const std::string& name, Render::DirLight*   light,     SceneNode* parent = nullptr);
-        ScenePointLight* AddPointLight(const std::string& name, Render::PointLight* light,     SceneNode* parent = nullptr);
-        SceneSpotLight*  AddSpotLight (const std::string& name, Render::SpotLight*  light,     SceneNode* parent = nullptr);
-        ScenePrimitive*  AddPrimitive (const std::string& name, Physics::Primitive* primitive, SceneNode* parent = nullptr);
+        SceneNode*            AddEmpty          (const std::string& name,                                                          SceneNode* parent = nullptr);
+        SceneModel*           AddModel          (const std::string& name, Resources::Mesh*    meshGroup,                           SceneNode* parent = nullptr);
+        SceneInstancedModel*  AddInstancedModel (const std::string& name, Resources::Mesh*    meshGroup, const int& instanceCount, SceneNode* parent = nullptr);
+        SceneSkybox*          AddSkybox         (const std::string& name, Resources::Cubemap* cubemap,                             SceneNode* parent = nullptr);
+        SceneCamera*          AddCamera         (const std::string& name, Render::Camera*     camera,                              SceneNode* parent = nullptr);
+        SceneDirLight*        AddDirLight       (const std::string& name, Render::DirLight*   light,                               SceneNode* parent = nullptr);
+        ScenePointLight*      AddPointLight     (const std::string& name, Render::PointLight* light,                               SceneNode* parent = nullptr);
+        SceneSpotLight*       AddSpotLight      (const std::string& name, Render::SpotLight*  light,                               SceneNode* parent = nullptr);
+        ScenePrimitive*       AddPrimitive      (const std::string& name, Physics::Primitive* primitive, SceneNode* parent = nullptr);
         Physics::Primitive* AddCollider(SceneNode* node, const Physics::PrimitiveTypes& type, const Core::Maths::Vector3& pos = {0}, const Core::Maths::Vector3& rot = {0}, const Core::Maths::Vector3& scale = {1});
         Physics::Primitive* AddCollider(SceneNode* node, const Physics::PrimitiveTypes& type, const std::vector<Core::Maths::TangentVertex>& vertices);
         Physics::Primitive* AddCollider(SceneNode* node, const Physics::PrimitiveTypes& type, const std::vector<Core::Maths::Vector3>& vertices);

@@ -1,347 +1,367 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Fichiers sources">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Fichiers d%27en-tête">
+    <Filter Include="Includes">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Fichiers de ressources">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Fichiers d%27en-tête\Core">
+    <Filter Include="Includes\Core">
       <UniqueIdentifier>{2e94f75e-4c95-42e3-9c13-b5f81974ebe3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers d%27en-tête\Core\Maths">
+    <Filter Include="Includes\Core\Maths">
       <UniqueIdentifier>{14de3ac0-3813-4e2c-81dc-a709de039a46}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers d%27en-tête\Core\Physics">
+    <Filter Include="Includes\Core\Physics">
       <UniqueIdentifier>{18d12875-3360-4f51-a356-ac873ed17375}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers d%27en-tête\Externals">
+    <Filter Include="Includes\Externals">
       <UniqueIdentifier>{50ffea7e-36ae-4fca-b7e3-0d6f7e451085}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers d%27en-tête\Render">
+    <Filter Include="Includes\Render">
       <UniqueIdentifier>{559aee7e-e69a-4e0e-95d8-2df064cdf556}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers d%27en-tête\Resources">
+    <Filter Include="Includes\Resources">
       <UniqueIdentifier>{05a9bd2a-586e-4344-9ad5-f4aa64d1e701}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers d%27en-tête\Scenes">
+    <Filter Include="Includes\Scenes">
       <UniqueIdentifier>{37209e82-705b-478c-a6a8-d52ad784844f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers sources\Core">
+    <Filter Include="Sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Sources\Core">
       <UniqueIdentifier>{39c0ee6e-23fd-4ef4-9869-39419607a3ae}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers sources\Core\Maths">
+    <Filter Include="Sources\Core\Maths">
       <UniqueIdentifier>{84718434-a054-4d27-bded-c623c313377b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers sources\Core\Physics">
+    <Filter Include="Sources\Core\Physics">
       <UniqueIdentifier>{c50319a4-23e7-414f-b168-fb00891f9338}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers sources\Externals">
+    <Filter Include="Sources\Externals">
       <UniqueIdentifier>{8b9cba76-5e13-45ba-a58e-acfce8694fc4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers sources\Render">
+    <Filter Include="Sources\Render">
       <UniqueIdentifier>{c038d6bd-45a3-40cd-9093-dfef6b7cfaf1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers sources\Resources">
+    <Filter Include="Sources\Resources">
       <UniqueIdentifier>{bb3598c3-038a-4cc3-89f0-eddb1b868dfd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers sources\Scenes">
+    <Filter Include="Sources\Scenes">
       <UniqueIdentifier>{3a675639-7175-43ef-89bb-a58a55a3c0c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\Scenes\Scripts">
+      <UniqueIdentifier>{081535d6-6014-4f24-9b50-92a4bd0ccdd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Scenes\Scripts">
+      <UniqueIdentifier>{37781686-7459-4d74-8fe1-8d60175fb80d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Engine\Headers\App.h">
-      <Filter>Fichiers d%27en-tête\Core</Filter>
+      <Filter>Includes\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\Debug.h">
-      <Filter>Fichiers d%27en-tête\Core</Filter>
+      <Filter>Includes\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\KeyBindings.h">
-      <Filter>Fichiers d%27en-tête\Core</Filter>
+      <Filter>Includes\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\ThreadManager.h">
-      <Filter>Fichiers d%27en-tête\Core</Filter>
+      <Filter>Includes\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\TimeManager.h">
-      <Filter>Fichiers d%27en-tête\Core</Filter>
+      <Filter>Includes\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\Ui.h">
-      <Filter>Fichiers d%27en-tête\Core</Filter>
+      <Filter>Includes\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\Arithmetic.h">
-      <Filter>Fichiers d%27en-tête\Core\Maths</Filter>
+      <Filter>Includes\Core\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\Color.h">
-      <Filter>Fichiers d%27en-tête\Core\Maths</Filter>
+      <Filter>Includes\Core\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\Maths.h">
-      <Filter>Fichiers d%27en-tête\Core\Maths</Filter>
+      <Filter>Includes\Core\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\Matrix.h">
-      <Filter>Fichiers d%27en-tête\Core\Maths</Filter>
+      <Filter>Includes\Core\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\Transform.h">
-      <Filter>Fichiers d%27en-tête\Core\Maths</Filter>
+      <Filter>Includes\Core\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\Vector2.h">
-      <Filter>Fichiers d%27en-tête\Core\Maths</Filter>
+      <Filter>Includes\Core\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\Vector3.h">
-      <Filter>Fichiers d%27en-tête\Core\Maths</Filter>
+      <Filter>Includes\Core\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\Vector4.h">
-      <Filter>Fichiers d%27en-tête\Core\Maths</Filter>
+      <Filter>Includes\Core\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\Collisions.h">
-      <Filter>Fichiers d%27en-tête\Core\Physics</Filter>
+      <Filter>Includes\Core\Physics</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\Physics.h">
-      <Filter>Fichiers d%27en-tête\Core\Physics</Filter>
+      <Filter>Includes\Core\Physics</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\Primitive.h">
-      <Filter>Fichiers d%27en-tête\Core\Physics</Filter>
+      <Filter>Includes\Core\Physics</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\Rigidbody.h">
-      <Filter>Fichiers d%27en-tête\Core\Physics</Filter>
+      <Filter>Includes\Core\Physics</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Includes\glad\glad.h">
-      <Filter>Fichiers d%27en-tête\Externals</Filter>
+      <Filter>Includes\Externals</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Includes\imgui\imconfig.h">
-      <Filter>Fichiers d%27en-tête\Externals</Filter>
+      <Filter>Includes\Externals</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Includes\imgui\imgui.h">
-      <Filter>Fichiers d%27en-tête\Externals</Filter>
+      <Filter>Includes\Externals</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Includes\imgui\imgui_impl_glfw.h">
-      <Filter>Fichiers d%27en-tête\Externals</Filter>
+      <Filter>Includes\Externals</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Includes\imgui\imgui_impl_opengl3.h">
-      <Filter>Fichiers d%27en-tête\Externals</Filter>
+      <Filter>Includes\Externals</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Includes\imgui\imgui_impl_opengl3_loader.h">
-      <Filter>Fichiers d%27en-tête\Externals</Filter>
+      <Filter>Includes\Externals</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Includes\imgui\imgui_internal.h">
-      <Filter>Fichiers d%27en-tête\Externals</Filter>
+      <Filter>Includes\Externals</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Includes\imgui\imgui_stdlib.h">
-      <Filter>Fichiers d%27en-tête\Externals</Filter>
+      <Filter>Includes\Externals</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Includes\imgui\imstb_rectpack.h">
-      <Filter>Fichiers d%27en-tête\Externals</Filter>
+      <Filter>Includes\Externals</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Includes\imgui\imstb_textedit.h">
-      <Filter>Fichiers d%27en-tête\Externals</Filter>
+      <Filter>Includes\Externals</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Includes\imgui\imstb_truetype.h">
-      <Filter>Fichiers d%27en-tête\Externals</Filter>
+      <Filter>Includes\Externals</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\Camera.h">
-      <Filter>Fichiers d%27en-tête\Render</Filter>
+      <Filter>Includes\Render</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\CameraManager.h">
-      <Filter>Fichiers d%27en-tête\Render</Filter>
+      <Filter>Includes\Render</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\Light.h">
-      <Filter>Fichiers d%27en-tête\Render</Filter>
+      <Filter>Includes\Render</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\LightManager.h">
-      <Filter>Fichiers d%27en-tête\Render</Filter>
+      <Filter>Includes\Render</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\IResource.h">
-      <Filter>Fichiers d%27en-tête\Resources</Filter>
+      <Filter>Includes\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\Material.h">
-      <Filter>Fichiers d%27en-tête\Resources</Filter>
+      <Filter>Includes\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\MtlFile.h">
-      <Filter>Fichiers d%27en-tête\Resources</Filter>
+      <Filter>Includes\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\ObjFile.h">
-      <Filter>Fichiers d%27en-tête\Resources</Filter>
+      <Filter>Includes\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\SubMesh.h">
-      <Filter>Fichiers d%27en-tête\Resources</Filter>
+      <Filter>Includes\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\Mesh.h">
-      <Filter>Fichiers d%27en-tête\Resources</Filter>
+      <Filter>Includes\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\ResourceManager.h">
-      <Filter>Fichiers d%27en-tête\Resources</Filter>
+      <Filter>Includes\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\TextureSampler.h">
-      <Filter>Fichiers d%27en-tête\Resources</Filter>
+      <Filter>Includes\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\Shader.h">
-      <Filter>Fichiers d%27en-tête\Resources</Filter>
+      <Filter>Includes\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\Textures.h">
-      <Filter>Fichiers d%27en-tête\Resources</Filter>
+      <Filter>Includes\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\SceneGraph.h">
-      <Filter>Fichiers d%27en-tête\Scenes</Filter>
+      <Filter>Includes\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\SceneNode.h">
-      <Filter>Fichiers d%27en-tête\Scenes</Filter>
+      <Filter>Includes\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\PyScript.h">
-      <Filter>Fichiers d%27en-tête\Resources</Filter>
+      <Filter>Includes\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Engine\Headers\Cubemap.h">
+      <Filter>Includes\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Engine\Headers\PostProcessor.h">
+      <Filter>Includes\Render</Filter>
     </ClInclude>
     <ClInclude Include="..\Engine\Headers\ObjectScript.h">
-      <Filter>Fichiers d%27en-tête\Scenes</Filter>
+      <Filter>Includes\Scenes\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Engine\Headers\AsteroidRotation.h">
+      <Filter>Includes\Scenes\Scripts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Engine\Headers\Vector2.inl">
-      <Filter>Fichiers d%27en-tête\Core\Maths</Filter>
+      <Filter>Includes\Core\Maths</Filter>
     </None>
     <None Include="..\Engine\Headers\Vector3.inl">
-      <Filter>Fichiers d%27en-tête\Core\Maths</Filter>
+      <Filter>Includes\Core\Maths</Filter>
     </None>
     <None Include="..\Engine\Headers\Vector4.inl">
-      <Filter>Fichiers d%27en-tête\Core\Maths</Filter>
+      <Filter>Includes\Core\Maths</Filter>
     </None>
     <None Include="..\Engine\Headers\LightManager.inl">
-      <Filter>Fichiers d%27en-tête\Render</Filter>
+      <Filter>Includes\Render</Filter>
     </None>
     <None Include="..\Engine\Headers\ResourceManager.inl">
-      <Filter>Fichiers d%27en-tête\Resources</Filter>
+      <Filter>Includes\Resources</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Engine\Sources\App.cpp">
-      <Filter>Fichiers sources\Core</Filter>
+      <Filter>Sources\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\Collisions.cpp">
-      <Filter>Fichiers sources\Core</Filter>
+      <Filter>Sources\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\Debug.cpp">
-      <Filter>Fichiers sources\Core</Filter>
+      <Filter>Sources\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\KeyBindings.cpp">
-      <Filter>Fichiers sources\Core</Filter>
+      <Filter>Sources\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\PythonBindings.cpp">
-      <Filter>Fichiers sources\Core</Filter>
+      <Filter>Sources\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\ThreadManager.cpp">
-      <Filter>Fichiers sources\Core</Filter>
+      <Filter>Sources\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\TimeManager.cpp">
-      <Filter>Fichiers sources\Core</Filter>
+      <Filter>Sources\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\Ui.cpp">
-      <Filter>Fichiers sources\Core</Filter>
+      <Filter>Sources\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\Arithmetic.cpp">
-      <Filter>Fichiers sources\Core\Maths</Filter>
+      <Filter>Sources\Core\Maths</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\Color.cpp">
-      <Filter>Fichiers sources\Core\Maths</Filter>
+      <Filter>Sources\Core\Maths</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\Matrix.cpp">
-      <Filter>Fichiers sources\Core\Maths</Filter>
+      <Filter>Sources\Core\Maths</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\Transform.cpp">
-      <Filter>Fichiers sources\Core\Maths</Filter>
+      <Filter>Sources\Core\Maths</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\Vector2.cpp">
-      <Filter>Fichiers sources\Core\Maths</Filter>
+      <Filter>Sources\Core\Maths</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\Vector3.cpp">
-      <Filter>Fichiers sources\Core\Maths</Filter>
+      <Filter>Sources\Core\Maths</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\Vector4.cpp">
-      <Filter>Fichiers sources\Core\Maths</Filter>
+      <Filter>Sources\Core\Maths</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\Primitive.cpp">
-      <Filter>Fichiers sources\Core\Physics</Filter>
+      <Filter>Sources\Core\Physics</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\Rigidbody.cpp">
-      <Filter>Fichiers sources\Core\Physics</Filter>
+      <Filter>Sources\Core\Physics</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Includes\imgui\imgui.cpp">
-      <Filter>Fichiers sources\Externals</Filter>
+      <Filter>Sources\Externals</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Includes\imgui\imgui_draw.cpp">
-      <Filter>Fichiers sources\Externals</Filter>
+      <Filter>Sources\Externals</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Includes\imgui\imgui_impl_glfw.cpp">
-      <Filter>Fichiers sources\Externals</Filter>
+      <Filter>Sources\Externals</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Includes\imgui\imgui_impl_opengl3.cpp">
-      <Filter>Fichiers sources\Externals</Filter>
+      <Filter>Sources\Externals</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Includes\imgui\imgui_stdlib.cpp">
-      <Filter>Fichiers sources\Externals</Filter>
+      <Filter>Sources\Externals</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Includes\imgui\imgui_tables.cpp">
-      <Filter>Fichiers sources\Externals</Filter>
+      <Filter>Sources\Externals</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Includes\imgui\imgui_widgets.cpp">
-      <Filter>Fichiers sources\Externals</Filter>
+      <Filter>Sources\Externals</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\glad.cpp">
-      <Filter>Fichiers sources\Externals</Filter>
+      <Filter>Sources\Externals</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\Camera.cpp">
-      <Filter>Fichiers sources\Render</Filter>
+      <Filter>Sources\Render</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\CameraManager.cpp">
-      <Filter>Fichiers sources\Render</Filter>
+      <Filter>Sources\Render</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\Light.cpp">
-      <Filter>Fichiers sources\Render</Filter>
+      <Filter>Sources\Render</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\LightManager.cpp">
-      <Filter>Fichiers sources\Render</Filter>
+      <Filter>Sources\Render</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\Material.cpp">
-      <Filter>Fichiers sources\Resources</Filter>
+      <Filter>Sources\Resources</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\MtlFile.cpp">
-      <Filter>Fichiers sources\Resources</Filter>
+      <Filter>Sources\Resources</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\ObjFile.cpp">
-      <Filter>Fichiers sources\Resources</Filter>
+      <Filter>Sources\Resources</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\SubMesh.cpp">
-      <Filter>Fichiers sources\Resources</Filter>
+      <Filter>Sources\Resources</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\Mesh.cpp">
-      <Filter>Fichiers sources\Resources</Filter>
+      <Filter>Sources\Resources</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\ResourceManager.cpp">
-      <Filter>Fichiers sources\Resources</Filter>
+      <Filter>Sources\Resources</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\TextureSampler.cpp">
-      <Filter>Fichiers sources\Resources</Filter>
+      <Filter>Sources\Resources</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\Shader.cpp">
-      <Filter>Fichiers sources\Resources</Filter>
+      <Filter>Sources\Resources</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\Textures.cpp">
-      <Filter>Fichiers sources\Resources</Filter>
+      <Filter>Sources\Resources</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\SceneGraph.cpp">
-      <Filter>Fichiers sources\Scenes</Filter>
+      <Filter>Sources\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\SceneNode.cpp">
-      <Filter>Fichiers sources\Scenes</Filter>
+      <Filter>Sources\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\main.cpp">
-      <Filter>Fichiers sources</Filter>
+      <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\Engine\Sources\PyScript.cpp">
-      <Filter>Fichiers sources\Resources</Filter>
+      <Filter>Sources\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Engine\Sources\Cubemap.cpp">
+      <Filter>Sources\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Engine\Sources\PostProcessor.cpp">
+      <Filter>Sources\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Engine\Sources\AsteroidRotation.cpp">
+      <Filter>Sources\Scenes\Scripts</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

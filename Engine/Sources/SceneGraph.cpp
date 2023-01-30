@@ -74,6 +74,47 @@ SceneModel* SceneGraph::AddModel(const std::string& name, Resources::Mesh* meshG
     return newNode;
 }
 
+SceneInstancedModel* Scenes::SceneGraph::AddInstancedModel(const std::string& name, Resources::Mesh* meshGroup, const int& instanceCount, SceneNode* parent)
+{
+    // Set the parent if it is null.
+    if (parent == nullptr)
+        parent = root;
+
+    size_t freeId = FindFirstFreeId();
+
+    // Add the new id to the assigned node ids and sort the vector.
+    assignedNodeIds.push_back(freeId);
+    std::sort(assignedNodeIds.begin(), assignedNodeIds.end());
+
+    // Increment the total vertex count.
+    // TODO: Make this work with multithreaded loading.
+    // if (meshGroup->IsLoaded())
+    //     for (int i = 0; i < meshGroup->subMeshes.size(); i++)
+    //         totalVertexCount += meshGroup->subMeshes[i]->GetVertexCount();
+
+    // Create a new node and add it to the parent's children.
+    SceneInstancedModel* newNode = new SceneInstancedModel(freeId, name, meshGroup, instanceCount, parent);
+    parent->children.push_back(newNode);
+    return newNode;
+}
+
+SceneSkybox* Scenes::SceneGraph::AddSkybox(const std::string& name, Resources::Cubemap* cubemap, SceneNode* parent)
+{
+    // Set the parent if it is null.
+    if (parent == nullptr)
+        parent = root;
+    size_t freeId = FindFirstFreeId();
+
+	// Add the new id to the assigned node ids and sort the vector.
+	assignedNodeIds.push_back(freeId);
+	std::sort(assignedNodeIds.begin(), assignedNodeIds.end());
+
+    // Create a new node and add it to the parent's children.
+    SceneSkybox* newNode = new SceneSkybox(freeId, name, cubemap, parent);
+    parent->children.push_back(newNode);
+    return newNode;
+}
+
 SceneCamera* SceneGraph::AddCamera(const std::string& name, Render::Camera* camera, SceneNode* parent)
 {
     // Set the parent if it is null.
@@ -235,7 +276,7 @@ void SceneGraph::StartPlayMode()
 void SceneGraph::UpdateAndDrawAll(const Render::Camera& camera, const Render::LightManager& lightManager, const bool& dontUpdateScripts)
 {
     static bool shouldDoPhysics = true;
-    root->UpdateAndDrawChildren(camera, lightManager, sceneColliders ,dontUpdateScripts , shouldDoPhysics);
+    root->UpdateAndDrawChildren(camera, lightManager, sceneColliders, dontUpdateScripts , shouldDoPhysics);
     shouldDoPhysics = !shouldDoPhysics;
 
 }
@@ -259,16 +300,12 @@ void SceneGraph::ClearAll()
 SceneNode* SceneGraph::FindId(const size_t& searchId)
 {
     SceneNode* node = root->FindInChildrenId(searchId);
-    if (node == nullptr)
-        DebugLogWarning("No node with id " + std::to_string(searchId) + ".");
     return node;
 }
 
  SceneNode* SceneGraph::Find(const std::string& searchName)
  {
     SceneNode* node = root->FindInChildren(searchName);
-    if (node == nullptr)
-        DebugLogWarning("No node called " + searchName + ".");
     return node;
  }
 

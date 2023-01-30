@@ -1,0 +1,8 @@
+newmtl mat_asteroid
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.200000 0.200000 0.200000
+Ke 0.000000 0.000000 0.000000
+Ni 1.00
+map_Kd Asteroid_AO.png
+map_bump Asteroid_Normal.png

@@ -14,9 +14,9 @@ using namespace Core::Maths;
 using namespace Resources;
 using namespace Scenes;
 
-ImVec2 Ui::windowPositions [7] = { { 460,  90  }, { 0,   0   }, { 1550, 0    }, { 1180, 0    }, { 0,    850 }, { 215, 0   }, { 915, 0  } };
-ImVec2 Ui::windowSizes     [7] = { { 1000, 900 }, { 215, 850 }, { 370,  1080 }, { 370,  1080 }, { 1180, 230 }, { 175, 300 }, { 101, 58 } };
-bool   Ui::windowsCollapsed[7] = { false, false, false, false, false, false };
+ImVec2 Ui::windowPositions [8] = { { 460,  90  }, { 0,   0   }, { 1550, 0    }, { 1180, 0    }, { 390, 0 }, { 0,    850 }, { 215, 0   }, { 915, 0  } };
+ImVec2 Ui::windowSizes     [8] = { { 1000, 900 }, { 215, 850 }, { 370,  1080 }, { 370,  1080 }, { 0,   0 }, { 1180, 230 }, { 175, 300 }, { 101, 58 } };
+bool   Ui::windowsCollapsed[8] = { false, false, false, false, false, false, false };
 int    Ui::windowWidth         = 1920;
 int    Ui::windowHeight        = 1080;
 App*   Ui::app                 = nullptr;
@@ -104,30 +104,43 @@ void Ui::CheckWindowSize(const int& windowIndex)
     }
 }
 
-void Ui::ShowNodeNameUi(std::string& name, const SceneNodeTypes& type)
+void Ui::ShowNodeNameUi(std::string& name, const size_t& id, const SceneNodeTypes& type)
 {
     ImGui::AlignTextToFramePadding();
     switch (type)
     {
     case SceneNodeTypes::Model:
-        ImGui::Text("Selected model: ");
+        ImGui::Text("Selected object: Model");
+        break;
+    case SceneNodeTypes::InstancedModel:
+        ImGui::Text("Selected object: Instanced model");
         break;
     case SceneNodeTypes::Camera:
-        ImGui::Text("Selected camera: ");
+        ImGui::Text("Selected object: Camera");
         break;
     case SceneNodeTypes::DirLight:
-        ImGui::Text("Selected directional light: ");
+        ImGui::Text("Selected object: Directional light");
         break;
     case SceneNodeTypes::PointLight:
-        ImGui::Text("Selected point light: ");
+        ImGui::Text("Selected object: Point light");
         break;
     case SceneNodeTypes::SpotLight:
-        ImGui::Text("Selected spot light: ");
+        ImGui::Text("Selected object: Spot light");
+        break;
+    case SceneNodeTypes::Primitive:
+        ImGui::Text("Selected object: Primitive shape");
+        break;
+    case SceneNodeTypes::Skybox:
+        ImGui::Text("Selected object: Skybox");
         break;
     default:
-        ImGui::Text("Selected object: ");
+        ImGui::Text("Selected object: Object");
         break;
     }
+
+    // Show node id.
+    ImGui::AlignTextToFramePadding();
+    ImGui::Text(("ID: " + std::to_string(id) + ", Name:").c_str());
     ImGui::SameLine();
         
     // Allow text input to modify the object's name.
@@ -137,20 +150,26 @@ void Ui::ShowNodeNameUi(std::string& name, const SceneNodeTypes& type)
     name = inputBuffer;
 }
 
-void Ui::ShowTransformUi(Maths::Transform& transform, bool isScaleUniform)
+bool Ui::ShowTransformUi(Maths::Transform& transform, bool isScaleUniform)
 {
+    bool wasModified = false;
+
     // Inputs for position.
     Vector3 objectPos = transform.GetPosition();
-    if (ImGui::DragFloat3("Position", &objectPos.x, 0.1f))
+    if (ImGui::DragFloat3("Position", &objectPos.x, 0.1f)) {
         transform.SetPosition(objectPos);
+        wasModified = true;
+    }
 
     // Inputs for rotation.
     Vector3 objectRot = transform.GetRotation();
     objectRot.x = radToDeg(objectRot.x); objectRot.y = radToDeg(objectRot.y); objectRot.z = radToDeg(objectRot.z);
     ImGui::DragFloat3("Rotation", &objectRot.x, 5);
     objectRot.x = degToRad(objectRot.x); objectRot.y = degToRad(objectRot.y); objectRot.z = degToRad(objectRot.z);
-    if (objectRot != transform.GetRotation())
+    if (objectRot != transform.GetRotation()) {
         transform.SetRotation(objectRot);
+        wasModified = true;
+    }
 
     // Inputs for scale.
     if (!transform.isCamera)
@@ -158,8 +177,10 @@ void Ui::ShowTransformUi(Maths::Transform& transform, bool isScaleUniform)
         if (!isScaleUniform)
         {
             Vector3 objectScale = transform.GetScale();
-            if (ImGui::DragFloat3("Scale", &objectScale.x, 0.05f))
+            if (ImGui::DragFloat3("Scale", &objectScale.x, 0.05f)) {
                 transform.SetScale(objectScale);
+                wasModified = true;
+            }
         }
         else
         {
@@ -169,9 +190,12 @@ void Ui::ShowTransformUi(Maths::Transform& transform, bool isScaleUniform)
                 objectScale.y = objectScale.x;
                 objectScale.z = objectScale.x;
                 transform.SetScale(objectScale);
+                wasModified = true;
             }
         }
     }
+
+    return wasModified;
 }
 
 void Ui::ShowTextureUi(Texture*  texture, float size)
@@ -193,29 +217,45 @@ void Ui::ShowMaterialUi(Material* material)
     ImGui::DragFloat("Transparency", &material->transparency, 0.01f, 0, 1);
     ImGui::PopItemWidth();
 
-    Texture**    materialTextures[]    = { &material->ambientTexture, &material->diffuseTexture, &material->specularTexture, &material->emissionTexture, &material->shininessMap, &material->alphaMap, &material->normalMap };
+    Texture**   materialTextures[]     = { &material->ambientTexture, &material->diffuseTexture, &material->specularTexture, &material->emissionTexture, &material->shininessMap, &material->alphaMap, &material->normalMap };
     const char* materialTextureNames[] = { "Ambient texture", "Diffuse texture", "Specular texture", "Emission texture", "Shininess map", "Alpha map", "Normal map" };
     for (int i = 0; i < 7; i++)
     {
-        if (*materialTextures[i] == nullptr) continue;
-        if (ImGui::TreeNode(materialTextureNames[i]))
+        // Add texture button.
+        if (*materialTextures[i] == nullptr)
         {
-            ImGui::Unindent(5);
-            ImGui::TextWrapped((*materialTextures[i])->GetName().c_str());
-            ShowTextureUi(*materialTextures[i], ImGui::GetWindowWidth() - 70);
-            if (ImGui::BeginDragDropTarget())
+            if (ImGui::Button(("+##" + std::string(materialTextureNames[i])).c_str()))
+                *materialTextures[i] = app->resourceManager.Get<Texture>("Resources/Textures/defaultTexture.png");
+            ImGui::SameLine();
+            ImGui::AlignTextToFramePadding();
+            ImGui::TextWrapped(materialTextureNames[i]);
+        }
+        // Show textures.
+        else
+        {
+            if (ImGui::TreeNode(materialTextureNames[i]))
             {
-                // Enable dropping textures onto materials.
-                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ResourceTexture"))
+                ImGui::Unindent(5);
+                ImGui::TextWrapped((*materialTextures[i])->GetName().c_str());
+                ShowTextureUi(*materialTextures[i], ImGui::GetWindowWidth() - 70);
+                if (ImGui::BeginDragDropTarget())
                 {
-                    Assert(payload->DataSize == sizeof(materialTextures[i]), "Texture drag/drop payload of wrong size.");
-                    Texture* droppedNode = *(Texture**)payload->Data;
-                    *materialTextures[i] = droppedNode;
+                    // Enable dropping textures onto materials.
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ResourceTexture"))
+                    {
+                        Assert(payload->DataSize == sizeof(materialTextures[i]), "Texture drag/drop payload of wrong size.");
+                        Texture* droppedNode = *(Texture**)payload->Data;
+                        *materialTextures[i] = droppedNode;
+                    }
+                    ImGui::EndDragDropTarget();
                 }
-                ImGui::EndDragDropTarget();
+                if (ImGui::Button("Remove texture"))
+                {
+                    *materialTextures[i] = nullptr;
+                }
+                ImGui::Indent(5);
+                ImGui::TreePop();
             }
-            ImGui::Indent(5);
-            ImGui::TreePop();
         }
     }
 }
@@ -451,41 +491,68 @@ void Ui::ShowInspectorWindow()
     if (windowOpen && app->sceneGraph.selectedNode != nullptr)
     {
         app->sceneGraph.selectedNode->ShowInspectorUi();
-        if (app->sceneGraph.selectedNode->rigidbody != nullptr)
-            ShowRigidbodyUi(app->sceneGraph.selectedNode->rigidbody);
-        else  if (ImGui::Button("Add Rigidbody"))
-            app->sceneGraph.selectedNode->AddRigidbody();
-
-        if (ImGui::TreeNode("Add Collider"))
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                if (ImGui::Button(("Add " + Physics::Primitive::GetPrimitiveName((Physics::PrimitiveTypes)i)).c_str()))
-                {
-                    Physics::Primitive* sph = app->sceneGraph.AddCollider(app->sceneGraph.selectedNode, (Physics::PrimitiveTypes)i);
-                }
-            }
-            ImGui::TreePop();
-        }
-
-        ShowCollidersUi(app->sceneGraph.selectedNode);
     }
     ImGui::End();
 }
 
-void Ui::ShowCollidersUi(Scenes::SceneNode* node)
+void Ui::ShowPhysicsUi(Scenes::SceneNode* node)
 {
-    if (ImGui::TreeNode("Colliders"))
+    if (ImGui::TreeNode("Physics"))
     {
-        int i = 0;
-        for (Physics::Primitive* collider : node->colliders)
+        // Add collider buttons.
+        for (int i = 0; i < 3; i++)
         {
-            if (ImGui::TreeNode(("Collider " + std::to_string(i)).c_str()))
+            if (ImGui::Button(("+##" + Physics::Primitive::GetPrimitiveName((Physics::PrimitiveTypes)i)).c_str()))
             {
-                ShowTransformUi(*collider->transform, collider->type != Physics::PrimitiveTypes::Cube);
+                Physics::Primitive* sph = app->sceneGraph.AddCollider(node, (Physics::PrimitiveTypes)i);
+            }
+            ImGui::SameLine();
+            ImGui::AlignTextToFramePadding();
+            ImGui::Text((Physics::Primitive::GetPrimitiveName((Physics::PrimitiveTypes)i) + " collider").c_str());
+        }
+
+        // Add rigidbody button.
+        if (!node->rigidbody) {
+            if (ImGui::Button("+##Rigidbody"))
+                app->sceneGraph.selectedNode->AddRigidbody();
+            ImGui::SameLine();
+            ImGui::AlignTextToFramePadding();
+            ImGui::TextWrapped("Rigidbody");
+        }
+        // Rigidbody ui.
+        else {
+            if (ImGui::TreeNode("Rigidbody"))
+            {
+                Vector3 velocity = node->rigidbody->GetVelocity();
+                if (ImGui::DragFloat3("Velocity", &velocity.x, 0.1f))
+                    node->rigidbody->SetVelocity(velocity);
+
+                Vector3 acceleration = node->rigidbody->GetAcceleration();
+                if (ImGui::DragFloat3("Acceleration", &acceleration.x, 0.1f))
+                    node->rigidbody->SetAcceleration(acceleration);
+
                 ImGui::TreePop();
             }
-            i++;
+        }
+
+        // Colliders ui.
+        if (node->colliders.size() > 0)
+        {
+            if (ImGui::TreeNode("Colliders"))
+            {
+                int i = 0;
+                for (Physics::Primitive* collider : node->colliders)
+                {
+                    if (ImGui::TreeNode(("Collider " + std::to_string(i) + " (" + Physics::Primitive::GetPrimitiveName(collider->type) + ")").c_str()))
+                    {
+                        ShowTransformUi(*collider->transform, collider->type != Physics::PrimitiveTypes::Cube);
+                        ImGui::TreePop();
+                    }
+                    i++;
+                }
+
+                ImGui::TreePop();
+            }
         }
 
         ImGui::TreePop();
@@ -511,11 +578,19 @@ void Ui::ShowResourcesWindow()
         ImGui::AlignTextToFramePadding();
         ImGui::TextWrapped("Empty object");
 
+        // Camera.
+        if (ImGui::Button("+##Camera")) {
+            app->sceneGraph.AddCamera("Camera", app->cameraManager.Create({ app->GetWindowW(), app->GetWindowH() }, true));
+        }
+        ImGui::SameLine();
+        ImGui::AlignTextToFramePadding();
+        ImGui::TextWrapped("Camera");
+
         // Primitive.
         if (ImGui::CollapsingHeader("Primitives"))
         {
-            Material* defaultMat = app->resourceManager.Get<Material>("DefaultMat");                 // TODO: Temporary (should be done automatically).
-            ShaderProgram* shaderProgram = app->resourceManager.Get<ShaderProgram>("ShaderProgram"); // TODO: Temporary (should be done automatically).
+            Material*       defaultMat   = app->resourceManager.Get<Material>("DefaultMat");             // TODO: Temporary (should be done automatically).
+            ShaderProgram* shaderProgram = app->resourceManager.Get<ShaderProgram>("MeshShaderProgram"); // TODO: Temporary (should be done automatically).
 
             ImGui::Indent(3);
 
@@ -657,6 +732,52 @@ void Ui::ShowResourcesWindow()
         }
     }
     ImGui::End();
+}
+
+void Core::Ui::ShowPostProcessWindow()
+{
+    ImGui::SetNextWindowCollapsed(true, ImGuiCond_Once);
+    bool windowOpen = ImGui::Begin("Post Process", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+    CheckWindowSize(UiWindows::PostProcess);
+
+    if (windowOpen)
+    {
+        // Grayscale.
+        ImGui::Checkbox("Grayscale", &app->postProcessor.grayscale);
+        
+        // Negative.
+        ImGui::Checkbox("Negative", &app->postProcessor.negative);
+        
+        // Vignette.
+        ImGui::Checkbox("Vignette", &app->postProcessor.vignette);
+        ImGui::PushItemWidth(100);
+        if (app->postProcessor.vignette && ImGui::SliderFloat("Vignette Intensity", &app->postProcessor.vignetteIntensity, 0, 2))
+            app->postProcessor.vignetteIntensity = clamp(app->postProcessor.vignetteIntensity, 0, 2);
+
+        // Bloom.
+        ImGui::Checkbox("Bloom", &app->postProcessor.bloom);
+        ImGui::PushItemWidth(100);
+        if (app->postProcessor.bloom && ImGui::SliderFloat("Bloom Threshold", &app->postProcessor.bloomThreshold, 0, 1))
+            app->postProcessor.bloomThreshold = clamp(app->postProcessor.bloomThreshold, 0, 1);
+        ImGui::PushItemWidth(100);
+        if (app->postProcessor.bloom && ImGui::SliderFloat("Bloom Intensity", &app->postProcessor.bloomIntensity, 0, 2))
+            app->postProcessor.bloomIntensity = clamp(app->postProcessor.bloomIntensity, 0, 2);
+        ImGui::PushItemWidth(100);
+        if (app->postProcessor.bloom && ImGui::SliderInt("Bloom Spread", &app->postProcessor.bloomSpread, 1, 25))
+            app->postProcessor.bloomSpread = (int)clamp((float)app->postProcessor.bloomSpread, 1, 25);
+
+        // Blur.
+        ImGui::Checkbox("Blur", &app->postProcessor.blur);
+        ImGui::PushItemWidth(100);
+        if (app->postProcessor.blur && ImGui::SliderInt("Blur Radius", &app->postProcessor.blurRadius, 1, 25))
+            app->postProcessor.blurRadius = (int)clamp((float)app->postProcessor.blurRadius, 1, 25);
+
+        // Toon Shading.
+        ImGui::Checkbox("Toon Shading", &app->postProcessor.toonShading);
+        ImGui::PushItemWidth(100);
+        if (app->postProcessor.toonShading && ImGui::SliderInt("Toon Levels", &app->postProcessor.toonLevels, 1, 25))
+            app->postProcessor.toonLevels = (int)clamp((float)app->postProcessor.toonLevels, 1, 25);
+    }
 }
 
 void Ui::ShowLogsWindow()
@@ -849,24 +970,4 @@ void Ui::ShowPlayWindow()
         if (inSceneView) ImGui::Unindent(4);
     }
     ImGui::End();
-}
-
-void Ui::ShowRigidbodyUi(Physics::Rigidbody* rigidbody)
-{
-    ImGui::Indent(6);
-
-    if (ImGui::TreeNode("Rigidbody"))
-    {
-        Vector3 velocity = rigidbody->GetVelocity();
-        if (ImGui::DragFloat3("Velocity", &velocity.x, 0.1f))
-            rigidbody->SetVelocity(velocity);
-
-        Vector3 acceleration = rigidbody->GetAcceleration();
-        if (ImGui::DragFloat3("Acceleration", &acceleration.x, 0.1f))
-            rigidbody->SetAcceleration(acceleration);
-
-        ImGui::TreePop();
-    }
-
-    ImGui::Unindent(6);
 }

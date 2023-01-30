@@ -48,7 +48,7 @@ Mat4 Maths::GetRotationMatrix(const Vector3& rotation, const bool& reverse)
     if (reverse)
     {
         return GetYRotationMatrix(rotation.y) *
-               GetXRotationMatrix(-rotation.x) *
+               GetXRotationMatrix(rotation.x) *
                GetZRotationMatrix(rotation.z);
     }
     // For objects in world space.

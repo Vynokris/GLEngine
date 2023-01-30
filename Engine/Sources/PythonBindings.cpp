@@ -577,6 +577,37 @@ PYBIND11_MODULE(engine, m)
                 py::arg("x"), py::arg("y"), py::arg("color"), py::arg("updateTexture") = true)
         .def("UpdateTexture", &DynamicTexture::UpdateTexture, "Sends the texture's pixels to OpenGL.");
 
+    py::class_<RenderTexture, IResource>(m, "RenderTexture")
+        .def(py::init<std::string>())
+        .def_readwrite("clearColor", &RenderTexture::clearColor)
+
+        .def("GetWidth",  &RenderTexture::GetWidth,  "Returns the rendertexture's width.")
+        .def("GetHeight", &RenderTexture::GetHeight, "Returns the rendertexture's height.")
+        
+        .def("SetWidth",  &RenderTexture::SetWidth,  "Modifies the rendertexture's width.",  py::arg("width"))
+        .def("SetHeight", &RenderTexture::SetHeight, "Modifies the rendertexture's height.", py::arg("height"))
+        .def("SetSize",   &RenderTexture::SetSize,   "Modifies the rendertexture's size.",   py::arg("width"), py::arg("height"))
+        
+        .def("BeginRender", &RenderTexture::BeginRender, "Starts rendering to the rendertexture.")
+        .def("EndRender",   &RenderTexture::EndRender,   "Stops rendering to the rendertexture (defaults back to rendering to screen).");
+
+
+    // ----- Cubemap ----- //
+
+    py::enum_<CubeSides>(m, "CubeSides")
+        .value("Right",  CubeSides::Right)
+        .value("Left",   CubeSides::Left)
+        .value("Top",    CubeSides::Top)
+        .value("Bottom", CubeSides::Bottom)
+        .value("Front",  CubeSides::Front)
+        .value("Back",   CubeSides::Back)
+        .export_values();
+
+    py::class_<Cubemap, IResource>(m, "Cubemap")
+        .def(py::init<std::string>())
+        
+        .def("SetTexture", &Cubemap::SetTexture, "Sets the cubemap's texture on the given side.", py::arg("side"), py::arg("name"));
+
 
     // ----- Material ----- //
 
@@ -643,6 +674,17 @@ PYBIND11_MODULE(engine, m)
     py::class_<MtlFile, IResource>(m, "MtlFile")
         .def(py::init<std::string, ResourceManager&>())
         .def_readonly("createdResources", &MtlFile::createdResources);
+          
+
+    // ----- Time Manager ----- //
+    
+    py::class_<Time>(m, "Time")
+        .def("IsVsyncOn",    &Time::IsVsyncOn,    "Returns True if vertical synchronisation is enabled.")
+        .def("SetVsyncOn",   &Time::SetVsyncOn,   "Enables/disables vertical synchronisation.", py::arg("vsyncOn"))
+        .def("GetTargetFPS", &Time::GetTargetFPS, "Returns the engine's FPS cap.")
+        .def("SetTargetFPS", &Time::SetTargetFPS, "Modifies the engine's FPS cap.", py::arg("fps"))
+        .def("FPS",          &Time::FPS,          "Returns the engine's current FPS.")
+        .def("DeltaTime",    &Time::DeltaTime,    "Returns the engine's current delta time.");
 
 
     // ----- Resource Manager ----- //
@@ -698,17 +740,6 @@ PYBIND11_MODULE(engine, m)
 
         .def("AreAllResourcesLoaded",   &ResourceManager::AreAllResourcesLoaded,   "Returns True if all the resources have been loaded.")
         .def("AreAllResourcesInOpenGL", &ResourceManager::AreAllResourcesInOpenGL, "Returns True if all the resources have been sent to OpenGL.");
-          
-
-    // ----- Time Manager ----- //
-    
-    py::class_<Time>(m, "Time")
-        .def("IsVsyncOn",    &Time::IsVsyncOn,    "Returns True if vertical synchronisation is enabled.")
-        .def("SetVsyncOn",   &Time::SetVsyncOn,   "Enables/disables vertical synchronisation.", py::arg("vsyncOn"))
-        .def("GetTargetFPS", &Time::GetTargetFPS, "Returns the engine's FPS cap.")
-        .def("SetTargetFPS", &Time::SetTargetFPS, "Modifies the engine's FPS cap.", py::arg("fps"))
-        .def("FPS",          &Time::FPS,          "Returns the engine's current FPS.")
-        .def("DeltaTime",    &Time::DeltaTime,    "Returns the engine's current delta time.");
 
 
     // ----- Light Manager ----- //
@@ -815,6 +846,21 @@ PYBIND11_MODULE(engine, m)
                 py::arg("cameraParams"), py::arg("scaleToScreen"), py::return_value_policy::reference);
 
 
+    // ----- Post Processor ----- //
+
+    py::class_<PostProcessor>(m, "PostProcessor")
+        .def(py::init<PostProcessor>())
+        
+        .def_readwrite("negative",    &PostProcessor::negative)
+        .def_readwrite("blur",        &PostProcessor::blur)
+        .def_readwrite("toonShading", &PostProcessor::toonShading)
+        .def_readwrite("blurRadius",  &PostProcessor::blurRadius)
+        .def_readwrite("toonLevels",  &PostProcessor::toonLevels)
+        
+        .def("SetFramebufferSize", &PostProcessor::SetFramebufferSize, "Modifies the framebuffer's size.", py::arg("width"), py::arg("height"))
+        .def("SetClearColor",      &PostProcessor::SetClearColor,      "Modifies the background color.",   py::arg("color"));
+
+
     // ----- SceneNode ----- //
 
     py::class_<SceneNode>(m, "SceneNode")
@@ -846,12 +892,14 @@ PYBIND11_MODULE(engine, m)
 
     // ----- Scene Objects ----- //
 
-    py::class_<SceneModel,      SceneNode>(m, "SceneModel"     ).def_readwrite("mesh",      &SceneModel::meshGroup);
-    py::class_<SceneCamera,     SceneNode>(m, "SceneCamera"    ).def_readwrite("camera",    &SceneCamera::camera);
-    py::class_<SceneDirLight,   SceneNode>(m, "SceneDirLight"  ).def_readwrite("light",     &SceneDirLight::light);
-    py::class_<ScenePointLight, SceneNode>(m, "ScenePointLight").def_readwrite("light",     &ScenePointLight::light);
-    py::class_<SceneSpotLight,  SceneNode>(m, "SceneSpotLight" ).def_readwrite("light",     &SceneSpotLight::light);
-    py::class_<ScenePrimitive,  SceneNode>(m, "ScenePrimitive" ).def_readwrite("primitive", &ScenePrimitive::primitive);
+    py::class_<SceneModel,          SceneNode>(m, "SceneModel"         ).def_readwrite("mesh",      &SceneModel::meshGroup);
+    py::class_<SceneInstancedModel, SceneNode>(m, "SceneInstancedModel").def_readwrite("mesh",      &SceneInstancedModel::meshGroup).def_readwrite("instanceCount", &SceneInstancedModel::instanceCount).def_readwrite("instanceTransforms", &SceneInstancedModel::instanceTransforms);
+    py::class_<SceneSkybox,         SceneNode>(m, "SceneSkybox"        ).def_readwrite("cubemap",   &SceneSkybox::cubemap);
+    py::class_<SceneCamera,         SceneNode>(m, "SceneCamera"        ).def_readwrite("camera",    &SceneCamera::camera);
+    py::class_<SceneDirLight,       SceneNode>(m, "SceneDirLight"      ).def_readwrite("light",     &SceneDirLight::light);
+    py::class_<ScenePointLight,     SceneNode>(m, "ScenePointLight"    ).def_readwrite("light",     &ScenePointLight::light);
+    py::class_<SceneSpotLight,      SceneNode>(m, "SceneSpotLight"     ).def_readwrite("light",     &SceneSpotLight::light);
+    py::class_<ScenePrimitive,      SceneNode>(m, "ScenePrimitive"     ).def_readwrite("primitive", &ScenePrimitive::primitive);
 
 
     // ----- Scene Graph ----- //

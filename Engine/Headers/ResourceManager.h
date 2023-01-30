@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include "IResource.h"
 #include "Textures.h"
+#include "Cubemap.h"
 #include "TextureSampler.h"
 #include "Material.h"
 #include "SubMesh.h"

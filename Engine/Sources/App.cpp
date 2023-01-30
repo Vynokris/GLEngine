@@ -18,11 +18,30 @@
 #include "KeyBindings.h"
 #include "Camera.h"
 #include "PyScript.h"
+#include "AsteroidRotation.h"
+#include "Cubemap.h"
 
 using namespace Core;
 using namespace Core::Physics;
 using namespace Scenes;
 
+
+// TEMP START
+unsigned int /*FBO, RBO, framebufferTexture, */rectVAO, rectVBO;
+ShaderProgram* framebufferProgram = nullptr;
+RenderTexture* postProcessRenderTexture = nullptr;
+float rectangleVertices[] =
+{
+	// Coords    // texCoords
+	 1.0f, -1.0f,  1.0f, 0.0f,
+	-1.0f, -1.0f,  0.0f, 0.0f,
+	-1.0f,  1.0f,  0.0f, 1.0f,
+
+	 1.0f,  1.0f,  1.0f, 1.0f,
+	 1.0f, -1.0f,  1.0f, 0.0f,
+	-1.0f,  1.0f,  0.0f, 1.0f
+};
+// TEMP END
 
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
@@ -74,6 +93,7 @@ App::App(const AppInitializer& init)
         glDebugMessageCallback(glDebugOutput, nullptr);
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
     }
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -113,12 +133,16 @@ App::App(const AppInitializer& init)
         ImGui_ImplGlfw_ScrollCallback(window, x, y);
         App* app = (App*)glfwGetWindowUserPointer(window);
         app->inputs.mouseScroll = (float)y;
-        // EngineCamera* cam = app->cameraManager.engineCamera;
-        // if (cam && app->inputs.mouseRightClick && !app->InSceneView())
-        //     cam->moveSpeed = clampAbove(cam->moveSpeed + (float)y / 20, 0.05f);
+        EngineCamera* cam = app->cameraManager.engineCamera;
+        if (cam && app->inputs.mouseRightClick && !app->InSceneView())
+            cam->moveSpeed = clampAbove(cam->moveSpeed + (float)y * 10, 0.05f);
     });
 
     InitPyInterpreter();
+
+    // Load the post processor.
+    postProcessor.Setup(windowWidth, windowHeight);
+    postProcessor.SetClearColor({ 0.2f, 0.3f, 0.3f, 1.f });
 }
 
 void App::InitPyInterpreter()
@@ -272,10 +296,7 @@ void App::BeginRender()
 {
     time.NewFrame();
     ProcessInputs();
-
-    // Clear the window.
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    postProcessor.BeginRender();
 
     // Start a new ImGui frame.
     ImGui_ImplOpenGL3_NewFrame();
@@ -285,9 +306,13 @@ void App::BeginRender()
 
 void App::EndRender()
 {
-    // Render ImGui and swap window buffers.
+    postProcessor.EndRender();
+
+    // Render ImGui.
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+    // Swap window buffers.
     glfwSwapBuffers(window);
 }
 
@@ -369,10 +394,10 @@ void App::RenderEditor()
     Ui::ShowSceneGraphWindow();
     Ui::ShowInspectorWindow();
     Ui::ShowResourcesWindow();
+    Ui::ShowPostProcessWindow();
     Ui::ShowLogsWindow();
     Ui::ShowStatsWindow();
     Ui::ShowPlayWindow();
-
 }
 
 void App::RenderGame()
@@ -410,28 +435,44 @@ void App::StopPlayMode()
 void App::LoadDefaultResources()
 {
     // ----- Build and compile shader program ----- //
+    
+    // Create mesh shaders and shader program.
+    VertexShader*   meshShaderVert    = resourceManager.Create<VertexShader  >("Resources/Shaders/meshShader.vert");
+    FragmentShader* meshShaderFrag    = resourceManager.Create<FragmentShader>("Resources/Shaders/meshShader.frag");
+    ShaderProgram*  meshShaderProgram = resourceManager.Create<ShaderProgram >("MeshShaderProgram");
+    meshShaderProgram->AttachShader((IResource*)meshShaderVert);
+    meshShaderProgram->AttachShader((IResource*)meshShaderFrag);
 
-    // Create shaders and shader program.
+    // Create mesh shaders and shader program.
+    VertexShader* meshInstancedShaderVert = resourceManager.Create<VertexShader  >("Resources/Shaders/meshInstancedShader.vert");
+    ShaderProgram* meshInstanceShaderProgram = resourceManager.Create<ShaderProgram >("MeshInstancedShaderProgram");
+    meshInstanceShaderProgram->AttachShader((IResource*)meshInstancedShaderVert);
+    meshInstanceShaderProgram->AttachShader((IResource*)meshShaderFrag);
 
-    VertexShader*   vertexShader  = resourceManager.Create<VertexShader  >("Resources/Shaders/vertexShader.vert");
-    FragmentShader* lightShader   = resourceManager.Create<FragmentShader>("Resources/Shaders/lightShader.frag");
-    ShaderProgram*  shaderProgram = resourceManager.Create<ShaderProgram >("ShaderProgram");
-
-    // Attach shaders.
-    shaderProgram->AttachShader((IResource*)vertexShader);
-    shaderProgram->AttachShader((IResource*)lightShader);
+    // Create skybox shaders and shader program.
+    VertexShader*   skyboxShaderVert    = resourceManager.Create<VertexShader  >("Resources/Shaders/skyboxShader.vert");
+    FragmentShader* skyboxShaderFrag    = resourceManager.Create<FragmentShader>("Resources/Shaders/skyboxShader.frag");
+    ShaderProgram*  skyboxShaderProgram = resourceManager.Create<ShaderProgram >("SkyboxShaderProgram");
+    skyboxShaderProgram->AttachShader((IResource*)skyboxShaderVert);
+    skyboxShaderProgram->AttachShader((IResource*)skyboxShaderFrag);
 
 
     // ----- Default resources ----- //
 
     PrimitiveBuffers::CreateBuffers();
+    Texture*  defaultTexture = resourceManager.Create<Texture>("Resources/Textures/defaultTexture.png");
     Material* defaultMat = resourceManager.Create<Material>("DefaultMat");
     Material* colliderMat = resourceManager.Create<Material>("ColliderMat");
     Material* boundingBoxMat = resourceManager.Create<Material>("BoundingBoxMat");
     defaultMat->SetParams({ 0, 0, 0 }, { 1, 1, 1 }, { 1, 1, 1 }, { 0, 0, 0 }, 32);
     colliderMat->SetParams({ 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 1, 0 }, 0);
     boundingBoxMat->SetParams({ 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 1, 1, 0 }, 0);
-    SceneNode::SetDefaultRenderValues(shaderProgram, defaultMat, colliderMat, boundingBoxMat);
+    SceneNode::SetDefaultRenderValues(meshShaderProgram, defaultMat, colliderMat, boundingBoxMat);
+
+    // Load the cubemap mesh.
+    ObjFile* cubemapObj = resourceManager.Create<ObjFile>("Resources/Obj/cubemap.obj");
+    if (cubemapObj->createdResources.size() > 0)
+        ((Mesh*)cubemapObj->createdResources[0])->subMeshes[0]->SetShaderProgram(skyboxShaderProgram);
 }
 
 void App::LoadResources()
@@ -449,7 +490,23 @@ void App::LoadResources()
             matSteve->diffuse = RGB(1, 1, 1);
             matSteve->shininess = 32;
             matSteve->diffuseTexture = steveTexture;
-
+            
+            Cubemap* skybox = resourceManager.Create<Cubemap>("Skybox");
+            skybox->SetTexture(CubeSides::Right,  "Resources/Skyboxes/Red/bkg1_right1.png");
+            skybox->SetTexture(CubeSides::Left,   "Resources/Skyboxes/Red/bkg1_left2.png");
+            skybox->SetTexture(CubeSides::Top,    "Resources/Skyboxes/Red/bkg1_top3.png");
+            skybox->SetTexture(CubeSides::Bottom, "Resources/Skyboxes/Red/bkg1_bottom4.png");
+            skybox->SetTexture(CubeSides::Back,   "Resources/Skyboxes/Red/bkg1_back6.png");
+            skybox->SetTexture(CubeSides::Front,  "Resources/Skyboxes/Red/bkg1_front5.png");
+            /*
+            Cubemap* minecraftBox = resourceManager.Create<Cubemap>("MinecraftBox");
+            minecraftBox->SetTexture(CubeSides::Back, "Resources/Skyboxes/Minecraft/panorama_0.png");
+            minecraftBox->SetTexture(CubeSides::Left, "Resources/Skyboxes/Minecraft/panorama_1.png");
+            minecraftBox->SetTexture(CubeSides::Front, "Resources/Skyboxes/Minecraft/panorama_2.png");
+            minecraftBox->SetTexture(CubeSides::Right, "Resources/Skyboxes/Minecraft/panorama_3.png");
+            minecraftBox->SetTexture(CubeSides::Top, "Resources/Skyboxes/Minecraft/panorama_4.png");
+            minecraftBox->SetTexture(CubeSides::Bottom, "Resources/Skyboxes/Minecraft/panorama_5.png");
+            */
             resourceManager.Create<ObjFile>("Resources/Assets/Gun/gun.obj");
             resourceManager.Create<ObjFile>("Resources/Assets/Rico/rico.obj");
             resourceManager.Create<ObjFile>("Resources/Assets/TrainingStadium/SuperTrainingStage.obj");
@@ -465,6 +522,9 @@ void App::LoadResources()
             resourceManager.Create<ObjFile>("Resources/Assets/Palutena/palutena.obj");
             resourceManager.Create<ObjFile>("Resources/Assets/Palutena/palutenaStaff.obj");
             resourceManager.Create<ObjFile>("Resources/Assets/Alduin/alduin.obj");
+
+            resourceManager.Create<ObjFile>("Resources/Assets/Asteroid/Asteroid.obj");
+            resourceManager.Create<ObjFile>("Resources/Assets/MercuryPlanet/Mercury 1K.obj");
         }
     };
     t.detach();
@@ -510,6 +570,12 @@ bool App::UnloadResources()
 
 void App::LoadExampleScene()
 {
+    // ----- Create the skybox ----- //
+
+    SceneSkybox* skybox = sceneGraph.AddSkybox("Skybox", resourceManager.Get<Cubemap>("Skybox"));
+    // SceneSkybox* skybox = sceneGraph.AddSkybox("Skybox", resourceManager.Get<Cubemap>("MinecraftBox"));
+
+
     // ----- Create the camera ----- //
 
     Camera* camera = cameraManager.Create({ GetWindowW(), GetWindowH(), 0.1f, 1000.f, 80.f }, true);
@@ -558,6 +624,10 @@ void App::LoadExampleScene()
     SceneNode* palutena    = sceneGraph.AddModel("Palutena",     resourceManager.Get<Mesh>("mesh_palutena"));
     SceneNode* staff       = sceneGraph.AddModel("Staff",        resourceManager.Get<Mesh>("mesh_palutenaStaff"), palutena);
     SceneNode* alduin      = sceneGraph.AddModel("Alduin",       resourceManager.Get<Mesh>("Alduin"));
+    SceneNode* mercury     = sceneGraph.AddModel("Mercury",      resourceManager.Get<Mesh>("mesh_mercury"));
+
+    SceneNode* asteroidBelt = sceneGraph.AddInstancedModel("Asteroid Belt", resourceManager.Get<Mesh>("mesh_asteroid"), 400);
+
     SceneNode* pointLight2 = sceneGraph.AddPointLight("PointLight", light4, alduin);
     SceneNode* pointLight3 = sceneGraph.AddPointLight("PointLight", light5, alduin);
     SceneNode* killZone    = sceneGraph.AddEmpty("KillZone");
@@ -606,67 +676,72 @@ void App::LoadExampleScene()
     killZone->AddRigidbody(true);
 
     // Transform scene objects.
-    player     ->transform.SetScale({ 3.f ,3.f     ,3.f   });
-    player     ->transform.Move    ({ -2,    0,     0     });
-    player     ->transform.SetRotation({ 0, PI / 2 , 0 });
-    gunLeft    ->transform.SetPosition({ 0.3f , 0.38f , 0 });
-    gunLeft    ->transform.SetScale({ 0.05f, 0.05f, 0.05f });
-    gunRight   ->transform.SetPosition({ -0.3f , 0.38f , 0 });
-    gunRight   ->transform.SetScale({ 0.05f, 0.05f, 0.05f });
-    camera     ->transform->Move   ({ 0, 1, -8 });
-    camera     ->transform->Rotate ({ degToRad(15), 0, 0 });
-    primCube0  ->transform.Move    ({ 19.7f, 2,     0.5f  });
-    primCube0  ->transform.SetScale({ 4.5f,  1,     12.1f });
-    primCube1  ->transform.Move    ({ 26.4f, 3.8f,  0     });
-    primCube1  ->transform.SetScale({ 3.6f,  0.25f, 4.9f  });
-    primCube2  ->transform.Move    ({ 0,    -1,     0     });
-    primCube2  ->transform.SetScale({ 23.5f, 1,     7.15f });
-    primCube3  ->transform.Move    ({ 14.6f, 0,     0.9f  });
-    primCube3  ->transform.SetScale({ 1.85f, 1,     3.7f  });
-    primCube4  ->transform.Move    ({ 29.9f, 4.9f,  11.3f });
-    primCube4  ->transform.SetScale({ 3.6f,  0.25f, 4.9f  });
-    primCube5  ->transform.Move    ({ 33.9f, 2.9f,  3.7f  });
-    primCube5  ->transform.SetScale({ 3.6f,  0.25f, 4.9f  });
-    primCube6  ->transform.Move    ({ 23.8f, 6.6f,  14.6f });
-    primCube6  ->transform.SetScale({ 3.6f,  0.25f, 4.9f  });
-    primCube7  ->transform.Move    ({ 17.1f, 7,     24.2f });
-    primCube7  ->transform.SetScale({ 3.6f,  0.25f, 4.9f  });
-    primCube8  ->transform.Move    ({ 17.2f, 7.1f,  33    });
-    primCube8  ->transform.SetScale({ 6.6f,  1.35f, 5.65f });
-    primCube9  ->transform.Move    ({ 17.95f, 3.975f, 1 });
-    primCube9  ->transform.SetScale({ 1.f, 2.95f, 1.f });
-    killZone   ->transform.Move    ({ 0, -3.9f, 0 });
-    stadium    ->transform.Move    ({ 0, -3, 0 });
-    stadium    ->transform.SetScale({ 4, 4, 4 });
-    moon       ->transform.Move    ({ 0, 40, 40 });
-    moon       ->transform.Rotate  ({ 0, PI/2, -6*PI/9 });
-    moon       ->transform.SetScale({ 0.01f, 0.01f, 0.01f });
-    headcrab   ->transform.Move    ({ -4.5f, 1.6f, 5.f });
-    headcrab   ->transform.Rotate  ({ 0, PI/2, 0 });
-    headcrab   ->transform.SetScale({ 3, 3, 3 });
-    crowbar    ->transform.Move    ({ 0, 0.75, 0 });
-    crowbar    ->transform.Rotate  ({ -PI/3, PI, -PI/2 });
-    crowbar    ->transform.SetScale({ 0.03f, 0.03f, 0.03f });
-    itemBox    ->transform.Move    ({ -4.5, 0, 5.f });
-    itemBox    ->transform.SetScale({ 0.7f, 0.7f, 0.7f });
-    banana     ->transform.Rotate  ({ PI/2, -PI/1.2f, 0 });
-    banana     ->transform.SetScale({ 0.02f, 0.02f, 0.02f });
-    doomSlayer ->transform.Move    ({ -1.5f, 0, 5.f });
-    doomSlayer ->transform.SetScale({ 0.02f, 0.02f, 0.02f });
-    bfg        ->transform.Move    ({ 0, 250, 0 });
-    bfg        ->transform.Rotate  ({ 0, PI/2, 0 });
-    masterChief->transform.Move    ({ 1.5f, 0, 5.f });
-    masterChief->transform.SetScale({ 0.35f, 0.35f, 0.35f });
-    energySword->transform.Move    ({ 0, 13.85f, 0 });
-    energySword->transform.Rotate  ({ PI/2, PI/2, 0 });
-    energySword->transform.SetScale({ 0.17f, 0.17f, 0.17f });
-    palutena   ->transform.Move    ({ 4.5, 0, 5.f });
-    palutena   ->transform.SetScale({ 9, 9, 9 });
-    staff      ->transform.Move    ({ 0, 0.54f, 0 });
-    staff      ->transform.Rotate  ({ 0, 0, PI/2 });
-    alduin     ->transform.Move    ({ -20, 1.5f, 24 });
-    alduin     ->transform.Rotate  ({ 0, PI/6, -PI/18 });
-    alduin     ->transform.SetScale({ 0.05f, 0.05f, 0.05f });
+    player      ->transform.SetScale({ 3.f ,3.f     ,3.f   });
+    player      ->transform.Move    ({ -2,    0,     0     });
+    player      ->transform.SetRotation({ 0, PI / 2 , 0 });
+    gunLeft     ->transform.SetPosition({ 0.3f , 0.38f , 0 });
+    gunLeft     ->transform.SetScale({ 0.05f, 0.05f, 0.05f });
+    gunRight    ->transform.SetPosition({ -0.3f , 0.38f , 0 });
+    gunRight    ->transform.SetScale({ 0.05f, 0.05f, 0.05f });
+    camera      ->transform->Move   ({ 0, 1, -8 });
+    camera      ->transform->Rotate ({ degToRad(15), 0, 0 });
+    primCube0   ->transform.Move    ({ 19.7f, 2,     0.5f  });
+    primCube0   ->transform.SetScale({ 4.5f,  1,     12.1f });
+    primCube1   ->transform.Move    ({ 26.4f, 3.8f,  0     });
+    primCube1   ->transform.SetScale({ 3.6f,  0.25f, 4.9f  });
+    primCube2   ->transform.Move    ({ 0,    -1,     0     });
+    primCube2   ->transform.SetScale({ 23.5f, 1,     7.15f });
+    primCube3   ->transform.Move    ({ 14.6f, 0,     0.9f  });
+    primCube3   ->transform.SetScale({ 1.85f, 1,     3.7f  });
+    primCube4   ->transform.Move    ({ 29.9f, 4.9f,  11.3f });
+    primCube4   ->transform.SetScale({ 3.6f,  0.25f, 4.9f  });
+    primCube5   ->transform.Move    ({ 33.9f, 2.9f,  3.7f  });
+    primCube5   ->transform.SetScale({ 3.6f,  0.25f, 4.9f  });
+    primCube6   ->transform.Move    ({ 23.8f, 6.6f,  14.6f });
+    primCube6   ->transform.SetScale({ 3.6f,  0.25f, 4.9f  });
+    primCube7   ->transform.Move    ({ 17.1f, 7,     24.2f });
+    primCube7   ->transform.SetScale({ 3.6f,  0.25f, 4.9f  });
+    primCube8   ->transform.Move    ({ 17.2f, 7.1f,  33    });
+    primCube8   ->transform.SetScale({ 6.6f,  1.35f, 5.65f });
+    primCube9   ->transform.Move    ({ 17.95f, 3.975f, 1 });
+    primCube9   ->transform.SetScale({ 1.f, 2.95f, 1.f });
+    killZone    ->transform.Move    ({ 0, -3.9f, 0 });
+    stadium     ->transform.Move    ({ 0, -3, 0 });
+    stadium     ->transform.SetScale({ 4, 4, 4 });
+    moon        ->transform.Move    ({ 0, 40, 40 });
+    moon        ->transform.Rotate  ({ 0, PI/2, -6*PI/9 });
+    moon        ->transform.SetScale({ 0.01f, 0.01f, 0.01f });
+    headcrab    ->transform.Move    ({ -4.5f, 1.6f, 5.f });
+    headcrab    ->transform.Rotate  ({ 0, PI/2, 0 });
+    headcrab    ->transform.SetScale({ 3, 3, 3 });
+    crowbar     ->transform.Move    ({ 0, 0.75, 0 });
+    crowbar     ->transform.Rotate  ({ -PI/3, PI, -PI/2 });
+    crowbar     ->transform.SetScale({ 0.03f, 0.03f, 0.03f });
+    itemBox     ->transform.Move    ({ -4.5, 0, 5.f });
+    itemBox     ->transform.SetScale({ 0.7f, 0.7f, 0.7f });
+    banana      ->transform.Rotate({PI / 2, -PI / 1.2f, 0});
+    banana      ->transform.SetScale({ 0.02f, 0.02f, 0.02f });
+    doomSlayer  ->transform.Move    ({ -1.5f, 0, 5.f });
+    doomSlayer  ->transform.SetScale({ 0.02f, 0.02f, 0.02f });
+    bfg         ->transform.Move    ({ 0, 250, 0 });
+    bfg         ->transform.Rotate  ({ 0, PI/2, 0 });
+    masterChief ->transform.Move    ({ 1.5f, 0, 5.f });
+    masterChief ->transform.SetScale({ 0.35f, 0.35f, 0.35f });
+    energySword ->transform.Move    ({ 0, 13.85f, 0 });
+    energySword ->transform.Rotate  ({ PI/2, PI/2, 0 });
+    energySword ->transform.SetScale({ 0.17f, 0.17f, 0.17f });
+    palutena    ->transform.Move    ({ 4.5, 0, 5.f });
+    palutena    ->transform.SetScale({ 9, 9, 9 });
+    staff       ->transform.Move    ({ 0, 0.54f, 0 });
+    staff       ->transform.Rotate  ({ 0, 0, PI/2 });
+    alduin      ->transform.Move    ({ -20, 1.5f, 24 });
+    alduin      ->transform.Rotate  ({ 0, PI/6, -PI/18 });
+    alduin      ->transform.SetScale({ 0.05f, 0.05f, 0.05f });
+    mercury     ->transform.Move    ({ 0, 100, 0 });
+    mercury     ->transform.Rotate  ({ PI/8, 0, PI/8 });
+    mercury     ->transform.SetScale({ 75, 75, 75 });
+    asteroidBelt->transform.Move    ({ 0, 100, 0 });
+    asteroidBelt->transform.Rotate  ({ PI/8, 0, PI/8 });
 
     // Update bounding boxes.
     cubeCollider0 ->boundingSphere.Update(cubeCollider0,  primCube0);
@@ -682,9 +757,12 @@ void App::LoadExampleScene()
     bananaCollider->boundingSphere.Update(bananaCollider, banana);
 
     // Scripts.
-    player      ->AddScript((ObjectScript*)new PyScript("Scripts/Player.py"),       this);
-    sceneCamera ->AddScript((ObjectScript*)new PyScript("Scripts/CameraScript.py"), this);
-    killZone    ->AddScript((ObjectScript*)new PyScript("Scripts/KillZone.py"),     this);
+    skybox      ->AddScript((ObjectScript*)new PyScript("Scripts/SkyboxRotation.py"),   this);
+    player      ->AddScript((ObjectScript*)new PyScript("Scripts/Player.py"),           this);
+    sceneCamera ->AddScript((ObjectScript*)new PyScript("Scripts/CameraScript.py"),     this);
+    killZone    ->AddScript((ObjectScript*)new PyScript("Scripts/KillZone.py"),         this);
+    mercury     ->AddScript((ObjectScript*)new PyScript("Scripts/RotateObject.py"),   this);
+    asteroidBelt->AddScript((ObjectScript*)new AsteroidRotation(), this);
 }
 
 void App::Benchmark()
@@ -749,6 +827,7 @@ void App::SetWindowSize(const int& width, const int& height, const bool& resizeU
 {
     windowWidth  = width;
     windowHeight = height;
+    postProcessor.SetFramebufferSize(width, height);
     if (resizeUi)
         Ui::FramebufferResizeCallback(width, height);
 }

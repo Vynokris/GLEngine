@@ -66,7 +66,13 @@ void Texture::Load()
         data = stbi_load(name.c_str(), &w, &h, &nrChannels, 0);
     }
 
-    Assert(data != NULL, "Unable to open texture file: " + name);
+    // Check if the data was correctly loaded.
+    if (!data)
+    {
+        DebugLogWarning("Unable to open texture file: " + name);
+        glDeleteTextures(1, &id);
+        return;
+    }
 
     // Save image parameters.
     name   = name;
@@ -186,4 +192,121 @@ void DynamicTexture::UpdateTexture()
 {
     glDeleteTextures(1, &id);
     SendToOpenGL();
+}
+
+
+
+// ----- Render Texture ----- //
+
+RenderTexture::RenderTexture(const std::string& _name)
+{
+    name = _name;
+    type = ResourceTypes::RenderTexture;
+}
+
+RenderTexture::~RenderTexture()
+{
+    glDeleteRenderbuffers(1, &rbo);
+    glDeleteTextures(1, &id);
+    glDeleteFramebuffers(1, &fbo);
+}
+
+void RenderTexture::Load()
+{
+    if (IsLoaded() || width <= 0 || height <= 0)
+        return;
+    SetLoadingDone();
+}
+
+void RenderTexture::SendToOpenGL()
+{
+    if (!IsLoaded() || WasSentToOpenGL())
+        return;
+
+    // Create Frame Buffer Object
+	glGenFramebuffers(1, &fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+	// Create Framebuffer Texture
+	glGenTextures(1, &id);
+	glBindTexture(GL_TEXTURE_2D, id);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // Prevents edge bleeding
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // Prevents edge bleeding
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, id, 0);
+
+	// Create Render Buffer Object
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+	// Error checking framebuffer
+	auto fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
+		DebugLogError("Unable to create rendertexture framebuffer (error code: " + std::to_string(fboStatus) + ")");
+        glDeleteRenderbuffers(1, &rbo);
+        glDeleteTextures(1, &id);
+        glDeleteFramebuffers(1, &fbo);
+        return;
+    }
+
+    SetOpenGLTransferDone();
+}
+
+void RenderTexture::BeginRender()
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+    // Clear the framebuffer.
+    glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void RenderTexture::EndRender()
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    // TODO: this requires a rendertexture stack to work with nested render textures.
+}
+
+void RenderTexture::SetWidth(const int& _width )
+{
+    width = _width;
+    if (WasSentToOpenGL())
+    {
+        glDeleteRenderbuffers(1, &rbo);
+        glDeleteTextures(1, &id);
+        glDeleteFramebuffers(1, &fbo);
+        sentToOpenGL = false;
+        SendToOpenGL();
+    }
+}
+
+void RenderTexture::SetHeight(const int& _height)
+{
+    height = _height;
+    if (WasSentToOpenGL())
+    {
+        glDeleteRenderbuffers(1, &rbo);
+        glDeleteTextures(1, &id);
+        glDeleteFramebuffers(1, &fbo);
+        sentToOpenGL = false;
+        SendToOpenGL();
+    }
+}
+
+void RenderTexture::SetSize(const int& _width, const int& _height)
+{
+    width  = _width;
+    height = _height;
+    if (WasSentToOpenGL())
+    {
+        glDeleteRenderbuffers(1, &rbo);
+        glDeleteTextures(1, &id);
+        glDeleteFramebuffers(1, &fbo);
+        sentToOpenGL = false;
+        SendToOpenGL();
+    }
 }

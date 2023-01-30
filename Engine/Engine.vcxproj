@@ -131,6 +131,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)Headers;$(ProjectDir)Includes\Python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <DisableSpecificWarnings>26451;</DisableSpecificWarnings>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -170,10 +171,12 @@
     <ClCompile Include="Includes\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Sources\App.cpp" />
     <ClCompile Include="Sources\Arithmetic.cpp" />
+    <ClCompile Include="Sources\AsteroidRotation.cpp" />
     <ClCompile Include="Sources\Camera.cpp" />
     <ClCompile Include="Sources\Collisions.cpp" />
     <ClCompile Include="Sources\CameraManager.cpp" />
     <ClCompile Include="Sources\Color.cpp" />
+    <ClCompile Include="Sources\Cubemap.cpp" />
     <ClCompile Include="Sources\Debug.cpp" />
     <ClCompile Include="Sources\glad.cpp" />
     <ClCompile Include="Sources\KeyBindings.cpp" />
@@ -184,6 +187,7 @@
     <ClCompile Include="Sources\Matrix.cpp" />
     <ClCompile Include="Sources\MtlFile.cpp" />
     <ClCompile Include="Sources\ObjFile.cpp" />
+    <ClCompile Include="Sources\PostProcessor.cpp" />
     <ClCompile Include="Sources\PyScript.cpp" />
     <ClCompile Include="Sources\PythonBindings.cpp" />
     <ClCompile Include="Sources\SubMesh.cpp" />
@@ -207,10 +211,12 @@
   <ItemGroup>
     <ClInclude Include="Headers\App.h" />
     <ClInclude Include="Headers\Arithmetic.h" />
+    <ClInclude Include="Headers\AsteroidRotation.h" />
     <ClInclude Include="Headers\Camera.h" />
     <ClInclude Include="Headers\Collisions.h" />
     <ClInclude Include="Headers\CameraManager.h" />
     <ClInclude Include="Headers\Color.h" />
+    <ClInclude Include="Headers\Cubemap.h" />
     <ClInclude Include="Headers\Debug.h" />
     <ClInclude Include="Headers\KeyBindings.h" />
     <ClInclude Include="Headers\IResource.h" />
@@ -222,6 +228,7 @@
     <ClInclude Include="Headers\MtlFile.h" />
     <ClInclude Include="Headers\ObjectScript.h" />
     <ClInclude Include="Headers\ObjFile.h" />
+    <ClInclude Include="Headers\PostProcessor.h" />
     <ClInclude Include="Headers\PyOpaqueClasses.h" />
     <ClInclude Include="Headers\PyScript.h" />
     <ClInclude Include="Headers\SubMesh.h" />

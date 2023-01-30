@@ -36,6 +36,7 @@ namespace Core
             SceneGraph,
             Inspector,
             Resources,
+            PostProcess,
             Logs,
             Stats,
             Play,
@@ -45,9 +46,9 @@ namespace Core
     class Ui
     {
     private:
-        static ImVec2 windowPositions [7];
-        static ImVec2 windowSizes     [7];
-        static bool   windowsCollapsed[7];
+        static ImVec2 windowPositions [8];
+        static ImVec2 windowSizes     [8];
+        static bool   windowsCollapsed[8];
         static int    windowWidth, windowHeight;
 
     public:
@@ -59,21 +60,21 @@ namespace Core
         static void FramebufferResizeCallback(const int& width, const int& height);
         static void CheckWindowSize          (const int& windowIndex);
 
-        static void ShowNodeNameUi  (std::string&         name, const Scenes::SceneNodeTypes& type);
-        static void ShowTransformUi (Maths::Transform&    transform, bool isScaleUniform = false);
+        static void ShowNodeNameUi  (std::string&         name, const size_t& id, const Scenes::SceneNodeTypes& type);
+        static bool ShowTransformUi (Maths::Transform&    transform, bool isScaleUniform = false);
         static void ShowTextureUi   (Resources::Texture*  texture, float size);
         static void ShowMaterialUi  (Resources::Material* material);
         static void ShowRemoveNodeUi(Scenes::SceneNode*&  node);
-        static void ShowRigidbodyUi (Physics::Rigidbody*  rigidbody);
-        static void ShowCollidersUi (Scenes::SceneNode*   node);
+        static void ShowPhysicsUi   (Scenes::SceneNode*   node);
 
-		static void ShowStartMenu       ();
-		static void ShowOptionsMenu     ();
-        static void ShowSceneGraphWindow();
-        static void ShowInspectorWindow ();
-        static void ShowResourcesWindow ();
-        static void ShowLogsWindow      ();
-        static void ShowStatsWindow     ();
-        static void ShowPlayWindow      ();
+		static void ShowStartMenu        ();
+		static void ShowOptionsMenu      ();
+        static void ShowSceneGraphWindow ();
+        static void ShowInspectorWindow  ();
+        static void ShowResourcesWindow  ();
+        static void ShowPostProcessWindow();
+        static void ShowLogsWindow       ();
+        static void ShowStatsWindow      ();
+        static void ShowPlayWindow       ();
     };
 }

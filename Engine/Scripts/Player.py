@@ -55,6 +55,7 @@ class Player(engine.ObjectScript):
     def CheckCamera(self):
         if self.camera is None:
             engine.DebugLogWarning("Player was unable to find its camera.")
+            self.camera = self.app.sceneGraph.Find("Camera")
             return False
         return True
         

@@ -4,6 +4,7 @@
 #include "Ui.h"
 #include "Mesh.h"
 #include "SubMesh.h"
+#include "Cubemap.h"
 #include "Material.h"
 #include "Camera.h"
 #include "LightManager.h"
@@ -11,6 +12,7 @@
 #include "PyScript.h"
 #include "ResourceManager.h"
 #include "App.h"
+#include <iostream>
 using namespace Scenes;
 using namespace Render;
 using namespace Resources;
@@ -29,6 +31,9 @@ void DrawMesh(const ShaderProgram* shaderProgram, const GLuint& vao, const int& 
     glUniformMatrix4fv(glGetUniformLocation(shaderProgramId, "mvpMatrix"), 1, GL_FALSE, (worldMat * camera.GetViewMat() * camera.GetProjectionMat()).ptr);
     glUniformMatrix4fv(glGetUniformLocation(shaderProgramId, "modelMat" ), 1, GL_FALSE,  worldMat.ptr);
 
+    // Tell the shader to deal with the mesh as a single element
+    glUniform1i(glGetUniformLocation(shaderProgramId, "instanced"), false);
+
     // Send the camera position to shader.
     glUniform3f(glGetUniformLocation(shaderProgramId, "ViewPos"), -camera.transform->GetPosition().x, camera.transform->GetPosition().y, camera.transform->GetPosition().z);
 
@@ -46,6 +51,34 @@ void DrawMesh(const ShaderProgram* shaderProgram, const GLuint& vao, const int& 
     glBindVertexArray(0);
 }
 
+void DrawInstancedMesh(const ShaderProgram* shaderProgram, const GLuint& vao, const int& vertexCount, const int& instanceCount, const Mat4& worldMat, const Camera& camera, const Material* material, const LightManager* lightManager = nullptr)
+{
+    const unsigned int shaderProgramId = shaderProgram->GetId();
+    if (shaderProgramId == 0 || vao == 0)
+        return;
+
+    glUseProgram(shaderProgramId);
+
+    // Send matrices to shader.
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgramId, "mvpMatrix"), 1, GL_FALSE, (worldMat * camera.GetViewMat() * camera.GetProjectionMat()).ptr);
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgramId, "modelMat"), 1, GL_FALSE, worldMat.ptr);
+
+    // Send the camera position to shader.
+    glUniform3f(glGetUniformLocation(shaderProgramId, "ViewPos"), -camera.transform->GetPosition().x, camera.transform->GetPosition().y, camera.transform->GetPosition().z);
+
+    // Send material to shader.
+    if (material != nullptr)
+        material->SendDataToShader(shaderProgramId, ResourceManager::GetSampler()->GetId());
+
+    // Send lights to shader.
+    if (lightManager != nullptr)
+        lightManager->SendLightsToShader(shaderProgramId);
+
+    // Draw the mesh.
+    glBindVertexArray(vao);
+    glDrawElementsInstanced(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0, instanceCount);
+    glBindVertexArray(0);
+}
 
 // ----- Scene node ----- //
 
@@ -162,12 +195,25 @@ void SceneNode::UpdateAndDrawChildren(const Camera& camera, const LightManager& 
     Mat4 childrenParentMat = transform.GetModelMat() * transform.parentMat;
     for (SceneNode* child : children) {
         child->transform.parentMat = childrenParentMat;
+        // TODO: TEMP START
+        if (child->type == SceneNodeTypes::InstancedModel) {
+            SceneInstancedModel* instancedModel = (SceneInstancedModel*)child;
+            if (instancedModel->meshGroup->WasSentToOpenGL() && !instancedModel->wasLoaded) 
+            {
+                instancedModel->Setup();
+            }
+        }
+        // TEMP END
         child->UpdateAndDrawChildren(camera, lightManager, sceneColliders, dontUpdateScripts);
     }
 
     // Draw scene models.
     if (type == SceneNodeTypes::Model)
         ((SceneModel*)this)->Draw(camera, lightManager);
+    else if (type == SceneNodeTypes::Skybox)
+        ((SceneSkybox*)this)->Draw(camera);
+    else if (type == SceneNodeTypes::InstancedModel)
+        ((SceneInstancedModel*)this)->Draw(camera, lightManager);
     else if (type == SceneNodeTypes::Primitive)
         ((ScenePrimitive*)this)->Draw(camera, lightManager);
 
@@ -262,7 +308,7 @@ SceneNode* SceneNode::FindInChildrenId(const size_t& searchId, const bool& isRoo
     }
 
     if (isRootOfSearch)
-        DebugLogWarning("Unable to find node with id " + std::to_string(searchId) + " in children of node with id " + std::to_string(id) + ".");
+        DebugLogWarning("Unable to find node with id " + std::to_string(searchId) + " in children of " + name + ".");
     return nullptr;
 }
 
@@ -406,8 +452,9 @@ void SceneNode::ShowGraphUi(SceneNode*& selectedNode, const bool& showChildrenUi
 
 void SceneNode::ShowInspectorUi()
 {
-    Ui::ShowNodeNameUi(name, type);
+    Ui::ShowNodeNameUi(name, id, type);
     Ui::ShowTransformUi(transform);
+    Ui::ShowPhysicsUi(this);
 
     // Show scripts Ui.
     for (ObjectScript* script : scripts) {
@@ -456,7 +503,7 @@ void SceneModel::Draw(const Camera& camera, const LightManager& lightManager)
 // Returns false if the scene node gets deleted.
 void SceneModel::ShowInspectorUi()
 {
-    Ui::ShowNodeNameUi(name, type);
+    Ui::ShowNodeNameUi(name, id, type);
     Ui::ShowTransformUi(transform);
 
     // Information on meshes.
@@ -489,6 +536,258 @@ void SceneModel::ShowInspectorUi()
         ImGui::TreePop();
     }
 
+    Ui::ShowPhysicsUi(this);
+
+    // Show scripts Ui.
+    for (ObjectScript* script : scripts) {
+        script->ShowInspectorUi();
+    }
+
+    // Remove button.
+    SceneNode* refToThis = this;
+    Ui::ShowRemoveNodeUi(refToThis);
+}
+
+// ----- Scene instancied model ----- //
+
+SceneInstancedModel::SceneInstancedModel(const size_t& _id, const std::string& _name, Mesh* _meshGroup, const int& _instanceCount, SceneNode* _parent)
+    : SceneNode(_id, _name, _parent, SceneNodeTypes::InstancedModel)
+{
+    instanceCount = _instanceCount;
+    meshGroup = _meshGroup;
+
+    instanceTransforms.resize(instanceCount, Transform());
+    Shuffle();
+}
+
+void SceneInstancedModel::Setup()
+{
+    // Create matrix buffer.
+    unsigned int buffer;
+    glGenBuffers(1, &buffer);
+    matrixBufferId = buffer;
+    UpdateMatrixBuffer();
+
+    // Get the instanced mesh shader.
+    ShaderProgram* instanceShader = Ui::app->resourceManager.Get<ShaderProgram>("MeshInstancedShaderProgram");
+
+    // Update attribute array pointers.
+    for (unsigned int i = 0; i < meshGroup->subMeshes.size(); i++)
+    {
+        meshGroup->subMeshes[i]->SetShaderProgram(instanceShader);
+
+        DebugLog("Filling vertex shader");
+
+        glBindVertexArray(meshGroup->subMeshes[i]->VAO);
+
+        glEnableVertexAttribArray(5);
+        glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(Mat4), (void*)(0*sizeof(Vector4)));
+        glVertexAttribDivisor(5, 1);
+
+        glEnableVertexAttribArray(6);
+        glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(Mat4), (void*)(1*sizeof(Vector4)));
+        glVertexAttribDivisor(6, 1);
+
+        glEnableVertexAttribArray(7);
+        glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(Mat4), (void*)(2*sizeof(Vector4)));
+        glVertexAttribDivisor(7, 1);
+
+        glEnableVertexAttribArray(8);
+        glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(Mat4), (void*)(3*sizeof(Vector4)));
+        glVertexAttribDivisor(8, 1);
+
+        glBindVertexArray(0);
+
+        wasLoaded = true;
+    }
+}
+
+void SceneInstancedModel::UpdateMatrixBuffer()
+{
+    if (matrixBufferId == 0)
+        return;
+
+    std::vector<Mat4> instanceMatrices; instanceMatrices.reserve(instanceCount);
+    for (Transform& t : instanceTransforms)
+        instanceMatrices.push_back(t.GetModelMat());
+    glBindBuffer(GL_ARRAY_BUFFER, matrixBufferId);
+    glBufferData(GL_ARRAY_BUFFER, instanceCount * sizeof(Mat4), instanceMatrices.data(), GL_STATIC_DRAW);
+}
+
+void SceneInstancedModel::Draw(const Camera& camera, const LightManager& lightManager)
+{
+    if (meshGroup != nullptr)
+    {
+        Mat4 worldMat = transform.GetModelMat() * transform.parentMat;
+        for (size_t i = 0; i < meshGroup->subMeshes.size(); i++)
+        {
+            if (meshGroup->subMeshes[i]->WasSentToOpenGL())
+            {
+                const ShaderProgram* shaderProgram = meshGroup->subMeshes[i]->GetShaderProgram();
+                const Material* material = meshGroup->subMeshes[i]->GetMaterial();
+                if (!shaderProgram)  shaderProgram = defaultShaderProgram;
+                if (!material)       material = defaultMaterial;
+
+                DrawInstancedMesh(shaderProgram, meshGroup->subMeshes[i]->VAO, meshGroup->subMeshes[i]->GetVertexCount(), (int)instanceTransforms.size(), worldMat, camera, material, &lightManager);
+            }
+        }
+    }
+}
+
+// Returns false if the scene node gets deleted.
+void SceneInstancedModel::ShowInspectorUi()
+{
+    Ui::ShowNodeNameUi(name, id, type);
+    Ui::ShowTransformUi(transform);
+
+    // Information on meshes.
+    if (ImGui::TreeNode("Object sub-meshes"))
+    {
+        ImGui::Unindent(5);
+        for (SubMesh* subMesh : meshGroup->subMeshes)
+        {
+            ImGui::Bullet();
+            ImGui::TextWrapped((subMesh->GetName() + " (" + std::to_string(subMesh->GetVertexCount()) + " vertices)").c_str());
+        }
+        ImGui::Indent(5);
+        ImGui::TreePop();
+    }
+
+    // Information on instance transforms.
+    if (ImGui::TreeNode("Instance transforms"))
+    {
+        ImGui::Unindent(5);
+        if (ImGui::TreeNode("All instances"))
+        {
+            // Inputs for position.
+            static Vector3 globalPos;
+            ImGui::PushItemWidth(150);
+            ImGui::DragFloat3("Position", &globalPos.x, 0.1f);
+            ImGui::SameLine();
+            if (ImGui::Button("Set for all##GlobalPos")) {
+                for (Transform& t : instanceTransforms)
+                    t.SetPosition(globalPos);
+                UpdateMatrixBuffer();
+            }
+
+            // Inputs for rotation.
+            static Vector3 globalRot;
+            globalRot.x = radToDeg(globalRot.x); globalRot.y = radToDeg(globalRot.y); globalRot.z = radToDeg(globalRot.z);
+            ImGui::PushItemWidth(150);
+            ImGui::DragFloat3("Rotation", &globalRot.x, 5);
+            globalRot.x = degToRad(globalRot.x); globalRot.y = degToRad(globalRot.y); globalRot.z = degToRad(globalRot.z);
+            ImGui::SameLine();
+            if (ImGui::Button("Set for all##GlobalRot")) {
+                for (Transform& t : instanceTransforms)
+                    t.SetRotation(globalRot);
+                UpdateMatrixBuffer();
+            }
+
+            // Inputs for scale.
+            static Vector3 globalScale = {1};
+            ImGui::PushItemWidth(150);
+            ImGui::DragFloat3("Scale   ", &globalScale.x, 0.05f);
+            ImGui::SameLine();
+            if (ImGui::Button("Set for all##GlobalScale")) {
+                for (Transform& t : instanceTransforms)
+                    t.SetScale(globalScale);
+                UpdateMatrixBuffer();
+            }
+
+            ImGui::TreePop();
+        }
+        for (int i = 0; i < instanceCount; i++)
+        {
+            if (ImGui::TreeNode(("Instance " + std::to_string(i)).c_str()))
+            {
+                if (Ui::ShowTransformUi(instanceTransforms[i]))
+                    UpdateMatrixBuffer();
+                ImGui::TreePop();
+            }
+        }
+        ImGui::Indent(5);
+        ImGui::TreePop();
+    }
+
+    // Information on materials.
+    if (ImGui::TreeNode("Object materials"))
+    {
+        for (SubMesh* subMesh : meshGroup->subMeshes)
+        {
+            Material* material = subMesh->GetMaterial();
+            if (material != nullptr && ImGui::TreeNode(material->GetName().c_str()))
+            {
+                ImGui::Unindent(5);
+                Core::Ui::ShowMaterialUi(material);
+                ImGui::Indent(5);
+                ImGui::TreePop();
+            }
+        }
+        ImGui::TreePop();
+    }
+
+    Ui::ShowPhysicsUi(this);
+
+    // Show scripts Ui.
+    for (ObjectScript* script : scripts) {
+        script->ShowInspectorUi();
+    }
+
+    // Remove button.
+    SceneNode* ptrToThis = this;
+    Ui::ShowRemoveNodeUi(ptrToThis);
+}
+
+void Scenes::SceneInstancedModel::Shuffle()
+{
+    for (Transform& t : instanceTransforms) {
+        t.SetPosition(Vector3(0, (float)(rand() % 4 - 2), 0) + Vector3(Vector3(0, degToRad((float)(rand() % 360)), 0), (float)(rand() % 20 + 25)));
+        t.SetRotation(Vector3(((float)(rand() % 5)) / 100.f));
+        t.SetScale((Vector3((float)(rand() % 300), (float)(rand() % 300), (float)(rand() % 300)) + (float)(rand() % 500) + 200) / 10000.f);
+    }
+}
+
+// ----- Scene Skybox ----- //
+
+SceneSkybox::SceneSkybox(const size_t& _id, const std::string& _name, Resources::Cubemap* _cubemap, SceneNode* _parent)
+            : SceneNode(_id, _name, _parent, SceneNodeTypes::Skybox)
+{
+    cubemap = _cubemap;
+    transform.SetScale(500);
+    skyboxMesh = Ui::app->resourceManager.Get<Mesh>("Cubemap"); // TODO: using static... oops
+}
+
+void SceneSkybox::Draw(const Render::Camera& camera)
+{
+    if (!skyboxMesh || skyboxMesh->subMeshes.size() <= 0)
+        return;
+
+    const SubMesh* skyboxSubMesh = skyboxMesh->subMeshes[0];
+    const unsigned int shaderProgramId = skyboxSubMesh->GetShaderProgram()->GetId();
+    if (shaderProgramId == 0 || skyboxSubMesh->VAO == 0)
+        return;
+
+    glCullFace(GL_FRONT);
+    glEnable(GL_CULL_FACE);
+    glUseProgram(shaderProgramId);
+
+    // Send matrices to shader.
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgramId, "viewProjMat"), 1, GL_FALSE, (transform.GetModelMat() * GetRotationMatrix(camera.transform->GetRotation(), true) * camera.GetProjectionMat()).ptr);
+
+    // Draw the mesh.
+    glBindVertexArray(skyboxSubMesh->VAO);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap->GetId());
+    glDrawElements(GL_TRIANGLES, skyboxSubMesh->GetVertexCount(), GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+    glCullFace(GL_BACK);
+}
+
+// Returns false if the scene node gets deleted.
+void SceneSkybox::ShowInspectorUi()
+{
+    Ui::ShowNodeNameUi(name, id, type);
+    Ui::ShowTransformUi(transform, true);
+
     // Show scripts Ui.
     for (ObjectScript* script : scripts) {
         script->ShowInspectorUi();
@@ -513,7 +812,7 @@ SceneCamera::SceneCamera(const size_t& _id, const std::string& _name, Render::Ca
 // Returns false if the scene node gets deleted.
 void SceneCamera::ShowInspectorUi()
 {
-    Ui::ShowNodeNameUi(name, type);
+    Ui::ShowNodeNameUi(name, id, type);
     Ui::ShowTransformUi(transform);
 
     // KeyBindings floats for camera parameters.
@@ -526,6 +825,19 @@ void SceneCamera::ShowInspectorUi()
     {
         params.fov = fov; params.near = near; params.far = far;
         camera->ChangeParameters(params);
+    }
+
+    // Set as scene camera button.
+    if (Ui::app->cameraManager.sceneCamera != camera)
+    {
+        if (ImGui::Button("Use this camera to render the scene"))
+        {
+            Ui::app->cameraManager.sceneCamera = camera;
+        }
+    }
+    else
+    {
+        ImGui::Text("This camera renders the scene");
     }
 
     // Show scripts Ui.
@@ -550,7 +862,7 @@ SceneDirLight::SceneDirLight(const size_t& _id, const std::string& _name, Render
 // Returns false if the scene node gets deleted.
 void SceneDirLight::ShowInspectorUi()
 {
-    Ui::ShowNodeNameUi(name, type);
+    Ui::ShowNodeNameUi(name, id, type);
 
     // KeyBindings floats for light parameters.
     ImGui::DragFloat3("Direction", &light->dir.x, 0.02f);
@@ -582,7 +894,7 @@ ScenePointLight::ScenePointLight(const size_t& _id, const std::string& _name, Re
 // Returns false if the scene node gets deleted.
 void ScenePointLight::ShowInspectorUi()
 {
-    Ui::ShowNodeNameUi(name, type);
+    Ui::ShowNodeNameUi(name, id, type);
 
     // KeyBindings floats for light parameters.
     ImGui::DragFloat3("Position",  &light->pos.x, 0.1f);
@@ -619,7 +931,7 @@ SceneSpotLight::SceneSpotLight(const size_t& _id, const std::string& _name, Rend
 // Returns false if the scene node gets deleted.
 void SceneSpotLight::ShowInspectorUi()
 {
-    Ui::ShowNodeNameUi(name, type);
+    Ui::ShowNodeNameUi(name, id, type);
 
     // KeyBindings floats for light parameters.
     ImGui::DragFloat3 ("Position",  &light->pos.x, 0.1f);
@@ -676,7 +988,7 @@ void ScenePrimitive::ShowInspectorUi()
     bool uniformTransform = primitive->type == PrimitiveTypes::Sphere ||
                             primitive->type == PrimitiveTypes::Capsule;
 
-    Ui::ShowNodeNameUi(name, type);
+    Ui::ShowNodeNameUi(name, id, type);
     Ui::ShowTransformUi(transform, uniformTransform);
 
     // Information on materials.
