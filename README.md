@@ -8,6 +8,7 @@ The project was segmented into a few parts with the following goals:
 - Create a small platformer game by adding a play mode, physics, collisions, and scene object scripts
 - Load assets asynchronously using multiple CPU threads to increase performance
 - Create bindings for the engine in Python and use them to create scene object scripts in Python rather than C++
+- Implement post processing, mesh instancing, skyboxes and gamma correction
 
 ## **Preview**
 
